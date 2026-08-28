@@ -1,1 +1,1 @@
-export const ADMIN_KEY_STORAGE = 'interview-manager.adminKey';
+export const ADMIN_KEY_STORAGE = 'skillsync.adminKey';

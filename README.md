@@ -1,19 +1,36 @@
-# Interview Revision Hub
+# SkillSync
 
-Full-stack interview question management and revision app built with React, TypeScript, Vite, Express, Prisma, and PostgreSQL.
+SkillSync helps interviewers and candidates collect, organize, practice, and maintain technical interview questions in one place.
 
-## Major Features
+## Technology Stack
 
-- Library grouped by topic and subtopic with search, role, skill, and experience filters.
-- Library and Admin pagination with a maximum of 10 records per page.
-- Conceptual, coding, and arbitrary custom question types from XLSX imports.
-- Markdown answers with tables, inline code, white code panels, copy actions, Verdana typography, syntax coloring, and horizontal scrolling for long lines.
-- Coding-question split view with Monaco Editor, language-aware editing, copy, and reset actions.
-- Admin create, edit, delete, XLSX import, and XLSX export workflows.
-- XLSX re-import upserts by exact `topic` plus `question`, updating existing records instead of appending duplicates.
-- Frontend Admin key guard with session-only storage, logout, and `x-admin-key` headers on Admin API operations.
-- Express health endpoint, structured backend logs, error logging, and PostgreSQL persistence through Prisma.
-- Storybook component states, Vitest unit tests, V8 coverage, SonarQube paths, Docker Compose, and GitHub Actions CI.
+- **Front End Development:** React, TypeScript, Vite, Tailwind CSS, React Markdown, Monaco Editor, Lucide React
+- **Back End Development:** Node.js, Express, TypeScript, Fetch API client
+- **Database and Data Management:** PostgreSQL, Prisma ORM, Prisma schema, database seed scripts, transactional batch updates
+- **Question Management:** XLSX import and export, topic and subtopic organization, filtering, pagination, duplicate detection, update-on-reimport
+- **Authentication and API Protection:** Session-based Admin key, `sessionStorage`, `x-admin-key` request headers, Admin CRUD and import/export APIs
+- **Unit Testing:** Vitest, React component tests, JSDOM
+- **Code Coverage:** V8 coverage provider, text reports, HTML reports, LCOV reports
+- **Component Development:** Storybook, component state stories, isolated UI testing
+- **Code Quality:** SonarQube source analysis, test discovery, coverage integration
+- **Containerization:** Docker multi-stage builds, Docker Compose, Nginx, PostgreSQL volumes, service health checks
+- **Continuous Integration:** GitHub Actions, dependency installation, Prisma client generation, unit tests, coverage, application builds, Storybook builds
+- **Monitoring and Logging:** Express health endpoint, structured backend logs, error logs
+
+## What You Can Do
+
+- Find the right question quickly by searching question text and answers.
+- Narrow practice sessions by topic, subtopic, role, skill, or minimum experience.
+- Browse questions in a clear topic and subtopic hierarchy.
+- Read conceptual explanations with headings, lists, tables, Markdown, and easy-to-read code examples.
+- Practice coding questions in an editor with syntax coloring, copy, and reset actions.
+- Move through large question collections with 10-question pages.
+- Add, edit, and remove questions from the management area.
+- Upload an XLSX workbook to add new questions or update existing questions automatically when their topic and question match.
+- Download the complete question collection as an XLSX workbook or start from a ready-made template.
+- Use any question type and organize topics such as Java, Cloud & DevOps, Messaging, and Databases.
+- Run the app locally or with Docker, with persistent question storage and health checks.
+- Review component states in Storybook and verify behavior with automated tests and coverage reports.
 
 ## Architecture
 

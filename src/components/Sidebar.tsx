@@ -99,10 +99,15 @@ interface SidebarProps {
 
 export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSelect, onSelectGroup }: SidebarProps) {
   const [showFilters, setShowFilters] = useState(true);
-  const [showSkills, setShowSkills] = useState(() => window.localStorage.getItem('interview-manager.library.showSkills') !== 'false');
+  const [showSkills, setShowSkills] = useState(() => {
+    const storedValue = window.localStorage.getItem('skillsync.library.showSkills');
+    return storedValue === null
+      ? window.localStorage.getItem('interview-manager.library.showSkills') !== 'false'
+      : storedValue !== 'false';
+  });
 
   useEffect(() => {
-    window.localStorage.setItem('interview-manager.library.showSkills', String(showSkills));
+    window.localStorage.setItem('skillsync.library.showSkills', String(showSkills));
   }, [showSkills]);
 
   const allRoles = useMemo(
@@ -139,7 +144,7 @@ export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSel
 
   return (
     <aside className="flex h-full w-full flex-col overflow-y-auto border-r border-slate-200 bg-white">
-      <ResizableSection storageKey="interview-manager.library.search" defaultHeight={118} className="border-b border-slate-200">
+      <ResizableSection storageKey="skillsync.library.search" defaultHeight={118} className="border-b border-slate-200">
         <div className="p-4">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Library</h2>
@@ -162,7 +167,7 @@ export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSel
       </ResizableSection>
 
       <ResizableSection
-        storageKey="interview-manager.library.filters"
+        storageKey="skillsync.library.filters"
         defaultHeight={290}
         heightOverride={showSkills ? undefined : 190}
         className="border-b border-slate-200 px-4 py-3"
@@ -249,7 +254,7 @@ export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSel
         )}
       </ResizableSection>
 
-      <ResizableSection storageKey="interview-manager.library.questions" defaultHeight={360} className="px-2 py-2">
+      <ResizableSection storageKey="skillsync.library.questions" defaultHeight={360} className="px-2 py-2">
         {grouped.length === 0 && (
           <p className="px-2 py-8 text-center text-sm text-slate-400">No questions match your filters.</p>
         )}

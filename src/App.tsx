@@ -16,7 +16,7 @@ const PANEL_MAX_WIDTH = 560;
 const QUESTIONS_PER_PAGE = 10;
 
 function getStoredPanelWidth() {
-  const storedWidth = Number(window.localStorage.getItem('interview-manager.library.panelWidth'));
+  const storedWidth = Number(window.localStorage.getItem('skillsync.library.panelWidth') ?? window.localStorage.getItem('interview-manager.library.panelWidth'));
   return Number.isFinite(storedWidth)
     ? Math.min(PANEL_MAX_WIDTH, Math.max(PANEL_MIN_WIDTH, storedWidth))
     : 320;
@@ -38,7 +38,7 @@ function AppInner() {
   const resizeStart = useRef<{ x: number; width: number } | null>(null);
 
   useEffect(() => {
-    window.localStorage.setItem('interview-manager.library.panelWidth', String(panelWidth));
+    window.localStorage.setItem('skillsync.library.panelWidth', String(panelWidth));
   }, [panelWidth]);
 
   useEffect(() => {
@@ -128,8 +128,8 @@ function AppInner() {
             <BookOpen className="h-5 w-5" />
           </div>
           <div>
-            <h1 className="text-base font-bold leading-tight text-slate-900">Interview Revision Hub</h1>
-            <p className="text-xs text-slate-400">Question management & practice</p>
+            <h1 className="text-base font-bold leading-tight text-slate-900">SkillSync</h1>
+            <p className="text-xs text-slate-400">Practice, revise, and manage interview questions</p>
           </div>
         </div>
         <nav className="flex items-center gap-1 rounded-lg bg-slate-100 p-1">

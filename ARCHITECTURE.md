@@ -1,6 +1,6 @@
 # Architecture
 
-Interview Manager is a React frontend backed by an Express API. Prisma provides the database access layer and PostgreSQL stores questions and metadata.
+SkillSync is a React frontend backed by an Express API. Prisma provides the database access layer and PostgreSQL stores questions and metadata.
 
 ```mermaid
 flowchart LR

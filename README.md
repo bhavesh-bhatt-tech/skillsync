@@ -38,14 +38,34 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the Mermaid system diagram.
 
 The frontend calls the Express API configured by `VITE_API_BASE_URL`. The API uses Prisma to read and write PostgreSQL.
 
+## Neon Postgres
+
+SkillSync uses Neon only for its PostgreSQL database; it does not currently use Neon Auth, Object Storage, Functions, or AI Gateway. Link the existing Neon project from an external command line in the project root:
+
+```bash
+neon link --org-id org-frosty-mouse-76892183 --project-id quiet-violet-12967351
+neon env pull --file server/.env
+```
+
+The link metadata is stored in the ignored `.neon` file. `neon env pull` writes the branch connection string as `DATABASE_URL`; Prisma and the Express backend use that value. Never commit `server/.env` or any Neon API key. The frontend continues to use `VITE_API_BASE_URL` to reach the Express API and does not connect directly to Neon.
+
+For VS Code or another MCP-compatible client, the workspace includes the official Neon MCP endpoint in `.vscode/mcp.json`. Start the MCP server from the client and complete Neon OAuth when prompted. MCP is for database/project operations; application traffic still goes through the Express API.
+
 ## Environment Variables
 
-Create a root `.env` file for local frontend development:
+The root `.env` is the canonical local environment file. Vite reads the `VITE_*` values, while Prisma and the Express backend read `DATABASE_URL`, `DATABASE_PASS`, and `PORT`:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000/api
-VITE_ADMIN_KEY=replace-with-a-local-admin-key
+VITE_ADMIN_KEY=
+DATABASE_URL="postgresql://user:__DATABASE_PASS__@your-neon-host/neondb?sslmode=require&channel_binding=require"
+DATABASE_PASS=replace-with-your-database-password
+PORT=5000
 ```
+
+The committed `server/.env.example` remains a safe template for running the backend as a standalone package, but the normal project commands use the root `.env`. When `DATABASE_URL` contains `__DATABASE_PASS__`, the backend URL-encodes and substitutes `DATABASE_PASS` at startup. You may instead provide a complete `DATABASE_URL`; `DATABASE_PASS` is then optional. Do not commit either `.env` file or any real database password.
+
+Set `VITE_ADMIN_KEY` in the host environment before starting or building the frontend. For local PowerShell, use `$env:VITE_ADMIN_KEY = 'your-key'`; for Docker Compose, set the same host variable before `docker compose up --build`. The Admin guard reads it through `import.meta.env.VITE_ADMIN_KEY`; no key is hard-coded in the application.
 
 `VITE_*` values are embedded into the frontend at startup/build time. They are not runtime server secrets. The Admin key is therefore a frontend gate; production deployments that require real authorization must validate `x-admin-key` in the backend or API gateway.
 
@@ -58,12 +78,14 @@ From the project root:
 ```bash
 # Bash, macOS, or Linux
 export VITE_ADMIN_KEY=replace-with-your-admin-key
+export DATABASE_PASS=replace-with-your-database-password
 docker compose up --build
 ```
 
 ```powershell
 # Windows PowerShell
 $env:VITE_ADMIN_KEY = 'replace-with-your-admin-key'
+$env:DATABASE_PASS = 'replace-with-your-database-password'
 docker compose up --build
 ```
 
@@ -71,18 +93,20 @@ Open `http://localhost:5173`. The containers are:
 
 - Frontend: Nginx on port `5173`.
 - Backend: Express on port `5000`.
-- PostgreSQL: internal Compose service with persistent `postgres_data` volume.
+- PostgreSQL: the local Compose database, persisted in the `postgres_data` volume.
 
-PostgreSQL starts first, the backend waits for its health check, and the backend initializes Prisma before starting. Stop containers with `docker compose down`; add `-v` only when you intentionally want to delete the database volume.
+PostgreSQL starts first, the backend waits for its health check, and Prisma initializes the schema before the backend starts. The backend exposes a health check at `/health`. Stop containers with `docker compose down`; add `-v` only when you intentionally want to delete the database volume.
 
 ## Local Development Without Docker
 
 Prerequisites: Node.js 20+ and PostgreSQL.
 
-1. Configure the backend in `server/.env`:
+1. Configure the backend in the root `.env` or `server/.env`:
 
 ```env
-DATABASE_URL=postgresql://interview:interview@localhost:5432/interview_hub?schema=public
+DATABASE_URL="postgresql://user:password@your-database-host/database?sslmode=require"
+DATABASE_PASS=your-database-password
+PORT=5000
 ```
 
 2. Start the backend from the project root:
@@ -90,8 +114,8 @@ DATABASE_URL=postgresql://interview:interview@localhost:5432/interview_hub?schem
 ```bash
 npm install
 npx prisma generate
-npx prisma db push
-npx prisma db seed
+npm run db:push
+npm run db:seed
 npm run dev:backend
 ```
 
@@ -100,6 +124,25 @@ npm run dev:backend
 ```bash
 npm run dev:frontend
 ```
+
+For deployment from the repository root, start the backend with:
+
+```bash
+npm start
+```
+
+This runs `tsx server/index.ts` on port `5000`. When deploying from inside the `server` directory instead, use `npm start` there as well; both package scripts start the same Express backend.
+
+### Render deployment
+
+For a Render Web Service using the repository root:
+
+```text
+Build Command: npm install && npx prisma generate
+Start Command: npm start
+```
+
+Set both `DATABASE_URL` and `DATABASE_PASS` as Render environment variables. `DATABASE_URL` is the complete Neon connection string; `DATABASE_PASS` is used only when the URL contains `__DATABASE_PASS__`. Set `VITE_API_BASE_URL` to the public backend URL followed by `/api` when deploying the frontend separately. Render supplies `PORT` automatically; the backend uses it and falls back to `5000` locally.
 
 The frontend is normally available at `http://localhost:5173` and the API at `http://localhost:5000`. If `VITE_API_BASE_URL` is omitted, the frontend defaults to `http://localhost:5000/api`.
 

@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_DB: interview_hub
       POSTGRES_USER: interview
-      POSTGRES_PASSWORD: interview
+      POSTGRES_PASSWORD: ${DATABASE_PASS:-interview}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -18,7 +18,8 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     environment:
-      DATABASE_URL: postgresql://interview:interview@postgres:5432/interview_hub?schema=public
+      DATABASE_PASS: ${DATABASE_PASS:-interview}
+      DATABASE_URL: postgresql://interview:${DATABASE_PASS:-interview}@postgres:5432/interview_hub?schema=public
       NODE_ENV: production
     depends_on:
       postgres:
@@ -37,7 +38,7 @@ services:
       dockerfile: Dockerfile.frontend
       args:
         VITE_API_BASE_URL: http://localhost:5000/api
-        VITE_ADMIN_KEY: ${VITE_ADMIN_KEY}
+        VITE_ADMIN_KEY: ${VITE_ADMIN_KEY:?Set VITE_ADMIN_KEY before building the frontend}
     depends_on:
       backend:
         condition: service_healthy
@@ -46,3 +47,4 @@ services:
 
 volumes:
   postgres_data:
+

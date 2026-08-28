@@ -1,0 +1,26 @@
+// Prisma schema for the Interview Question Revision & Management app.
+// Provider: PostgreSQL. Run `npx prisma db push` to sync this schema to your local DB.
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Question {
+  id            String   @id @default(uuid())
+  topic         String
+  subtopic      String
+  question         String
+  answer String  @db.Text
+  type          String   // "CONCEPTUAL" | "CODING" | "SYSTEM-DESIGN"
+  starterCode   String?  @db.Text
+  skills        String[] @default([])
+  roles         String[] @default([])
+  minExperience Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  @@index([topic, subtopic], map: "idx_questions_topic_subtopic")
+  @@index([type], map: "idx_questions_type")
+}

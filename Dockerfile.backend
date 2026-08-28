@@ -1,0 +1,16 @@
+FROM node:20-alpine AS dependencies
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+
+FROM node:20-alpine AS runtime
+ENV NODE_ENV=production
+WORKDIR /app
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY package*.json ./
+COPY prisma ./prisma
+COPY server ./server
+RUN npx prisma generate
+EXPOSE 5000
+USER node
+CMD ["sh", "-c", "npx prisma db push --skip-generate && node_modules/.bin/tsx server/index.ts"]

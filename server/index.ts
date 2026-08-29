@@ -31,9 +31,13 @@ app.use((req, res, next) => {
 // Batch imports can contain many questions and exceed Express's default 100kb limit.
 app.use(express.json({ limit: '10mb' }));
 
-// Enable CORS for Vite frontend origin
+// Enable CORS for local development and the deployed Vercel frontend.
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'https://skillsync-five-neon.vercel.app',
+  ],
   credentials: true,
 }));
 

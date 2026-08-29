@@ -1,5 +1,23 @@
 # SkillSync
 
+## Contributions
+
+### Overall System Design & Architecture
+
+Designed and architected by Bhavesh Bhatt
+
+### Functionality & User Experience
+
+Conceived and designed by Bhavesh Bhatt
+
+### Technology Stack & Engineering Decisions
+
+Selected and structured by Bhavesh Bhatt
+
+### Cloud Infrastructure & Deployment Strategy
+
+Configured and orchestrated by Bhavesh Bhatt
+
 SkillSync helps interviewers and candidates collect, organize, practice, and maintain technical interview questions in one place.
 
 ## Technology Stack

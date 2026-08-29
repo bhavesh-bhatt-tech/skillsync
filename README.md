@@ -157,7 +157,7 @@ For a Render Web Service using the repository root:
 
 ```text
 Build Command: npm install && npx prisma generate
-Start Command: npm start
+Start Command: npm start (synchronizes the Prisma schema before starting the API)
 ```
 
 Set both `DATABASE_URL` and `DATABASE_PASS` as Render environment variables. `DATABASE_URL` is the complete Neon connection string; `DATABASE_PASS` is used only when the URL contains `__DATABASE_PASS__`. Set `VITE_API_BASE_URL` to the public backend URL followed by `/api` when deploying the frontend separately. Render supplies `PORT` automatically; the backend uses it and falls back to `5000` locally.

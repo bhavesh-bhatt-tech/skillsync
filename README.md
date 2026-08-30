@@ -1,22 +1,34 @@
 # SkillSync
 
+<div align="center">
+  <img alt="SkillSync" src="https://img.shields.io/badge/SkillSync-Interview%20Question%20Assistant-0A7EA4?style=for-the-badge&logo=github" />
+  <br />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.5-3178C6?logo=typescript&logoColor=white" />
+  <img alt="React" src="https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black" />
+  <img alt="Prisma" src="https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white" />
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql&logoColor=white" />
+  <img alt="Vitest" src="https://img.shields.io/badge/Vitest-Testing-6E9F18?logo=vitest&logoColor=white" />
+  <img alt="Coverage" src="https://img.shields.io/badge/Code%20Coverage-Available-8A2BE2" />
+</div>
+
 ## Contributions
 
-### Overall System Design & Architecture
+<div style="font-family: Georgia, 'Times New Roman', serif; background: #f8fafc; border-left: 4px solid #64748b; border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0 1.5rem; color: #1f2937; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);">
+  <h3 style="margin: 0 0 0.5rem; font-family: Georgia, 'Times New Roman', serif; font-size: 1.35rem; letter-spacing: 0.04em; color: #0f172a;">Overall System Design & Architecture</h3>
+  <p style="margin: 0; font-size: 1rem; line-height: 1.7; color: #374151;">Designed and architected by <em>Bhavesh Bhatt</em></p>
+  <hr style="border: 0; border-top: 1px solid #d1d5db; margin: 0.8rem 0 1rem;" />
 
-Designed and architected by Bhavesh Bhatt
+  <h3 style="margin: 0 0 0.5rem; font-family: Georgia, 'Times New Roman', serif; font-size: 1.35rem; letter-spacing: 0.04em; color: #0f172a;">Functionality & User Experience</h3>
+  <p style="margin: 0; font-size: 1rem; line-height: 1.7; color: #374151;">Conceived and designed by <em>Bhavesh Bhatt</em></p>
+  <hr style="border: 0; border-top: 1px solid #d1d5db; margin: 0.8rem 0 1rem;" />
 
-### Functionality & User Experience
+  <h3 style="margin: 0 0 0.5rem; font-family: Georgia, 'Times New Roman', serif; font-size: 1.35rem; letter-spacing: 0.04em; color: #0f172a;">Technology Stack & Engineering Decisions</h3>
+  <p style="margin: 0; font-size: 1rem; line-height: 1.7; color: #374151;">Selected and structured by <em>Bhavesh Bhatt</em></p>
+  <hr style="border: 0; border-top: 1px solid #d1d5db; margin: 0.8rem 0 1rem;" />
 
-Conceived and designed by Bhavesh Bhatt
-
-### Technology Stack & Engineering Decisions
-
-Selected and structured by Bhavesh Bhatt
-
-### Cloud Infrastructure & Deployment Strategy
-
-Configured and orchestrated by Bhavesh Bhatt
+  <h3 style="margin: 0 0 0.5rem; font-family: Georgia, 'Times New Roman', serif; font-size: 1.35rem; letter-spacing: 0.04em; color: #0f172a;">Cloud Infrastructure & Deployment Strategy</h3>
+  <p style="margin: 0; font-size: 1rem; line-height: 1.7; color: #374151;">Configured and orchestrated by <em>Bhavesh Bhatt</em></p>
+</div>
 
 SkillSync helps interviewers and candidates collect, organize, practice, and maintain technical interview questions in one place.
 

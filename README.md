@@ -32,6 +32,18 @@
 
 SkillSync helps interviewers and candidates collect, organize, practice, and maintain technical interview questions in one place.
 
+## Quality, Monitoring & Production Links
+
+- **Code Coverage:** [Coverage Report](#)  
+- **Code Quality / SonarQube:** [Quality Dashboard](#)  
+- **Monitoring / Logs:** [Application Monitoring](#)  
+- **API Management / Swagger:** [API Docs](#)  
+- **Production Frontend:** [Vercel App](https://skillsync-five-neon.vercel.app/)  
+- **Production Backend:** [Render API](https://skill-sync-api.onrender.com/)  
+- **Health Check:** [Render Health](https://skill-sync-api.onrender.com/health)  
+- **GitHub Repository:** [Repository](#)  
+- **CI / Pipeline Status:** [GitHub Actions](#)  
+
 ## Technology Stack
 
 - **Front End :** React, TypeScript, Vite, Tailwind CSS, React Markdown, Monaco Editor, Lucide React
@@ -47,7 +59,7 @@ SkillSync helps interviewers and candidates collect, organize, practice, and mai
 - **Continuous Integration:** GitHub Actions, dependency installation, Prisma client generation, unit tests, coverage, application builds, Storybook builds
 - **Monitoring and Logging:** Express health endpoint, structured backend logs, error logs
 
-## What You Can Do
+## Application Use
 
 - Find the right question quickly by searching question text and answers.
 - Narrow practice sessions by topic, subtopic, role, skill, or minimum experience.

@@ -18,7 +18,7 @@
   <p style="margin: 0; font-size: 1rem; line-height: 1.7; color: #374151;">Designed and architected by <em>Bhavesh Bhatt</em></p>
   <hr style="border: 0; border-top: 1px solid #d1d5db; margin: 0.8rem 0 1rem;" />
 
-  <h3 style="margin: 0 0 0.5rem; font-family: Georgia, 'Times New Roman', serif; font-size: 1.35rem; letter-spacing: 0.04em; color: #0f172a;">Functionality & User Experience</h3>
+  <h3 style="margin: 0 0 0.5rem; font-family: Georgia, 'Times New Roman', serif; font-size: 1.35rem; letter-spacing: 0.04em; color: #0f172a;">Concept & User Experience</h3>
   <p style="margin: 0; font-size: 1rem; line-height: 1.7; color: #374151;">Conceived and designed by <em>Bhavesh Bhatt</em></p>
   <hr style="border: 0; border-top: 1px solid #d1d5db; margin: 0.8rem 0 1rem;" />
 
@@ -26,7 +26,7 @@
   <p style="margin: 0; font-size: 1rem; line-height: 1.7; color: #374151;">Selected and structured by <em>Bhavesh Bhatt</em></p>
   <hr style="border: 0; border-top: 1px solid #d1d5db; margin: 0.8rem 0 1rem;" />
 
-  <h3 style="margin: 0 0 0.5rem; font-family: Georgia, 'Times New Roman', serif; font-size: 1.35rem; letter-spacing: 0.04em; color: #0f172a;">Cloud Infrastructure & Deployment Strategy</h3>
+  <h3 style="margin: 0 0 0.5rem; font-family: Georgia, 'Times New Roman', serif; font-size: 1.35rem; letter-spacing: 0.04em; color: #0f172a;">Cloud & Deployment</h3>
   <p style="margin: 0; font-size: 1rem; line-height: 1.7; color: #374151;">Configured and orchestrated by <em>Bhavesh Bhatt</em></p>
 </div>
 
@@ -34,8 +34,8 @@ SkillSync helps interviewers and candidates collect, organize, practice, and mai
 
 ## Technology Stack
 
-- **Front End Development:** React, TypeScript, Vite, Tailwind CSS, React Markdown, Monaco Editor, Lucide React
-- **Back End Development:** Node.js, Express, TypeScript, Fetch API client
+- **Front End :** React, TypeScript, Vite, Tailwind CSS, React Markdown, Monaco Editor, Lucide React
+- **Back End :** Node.js, Express, TypeScript, Fetch API client
 - **Database and Data Management:** PostgreSQL, Prisma ORM, Prisma schema, database seed scripts, transactional batch updates
 - **Question Management:** XLSX import and export, topic and subtopic organization, filtering, pagination, duplicate detection, update-on-reimport
 - **Authentication and API Protection:** Session-based Admin key, `sessionStorage`, `x-admin-key` request headers, Admin CRUD and import/export APIs

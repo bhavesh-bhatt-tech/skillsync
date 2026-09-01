@@ -34,15 +34,15 @@ SkillSync helps interviewers and candidates collect, organize, practice, and mai
 
 ## Quality, Monitoring & Production Links
 
-- **Code Coverage:** [Coverage Report](#)  
-- **Code Quality / SonarQube:** [Quality Dashboard](#)  
-- **Monitoring / Logs:** [Application Monitoring](#)  
-- **API Management / Swagger:** [API Docs](#)  
+- **Code Coverage:** [Coverage & Testing](#technology-stack)  
+- **Code Quality / SonarQube:** [Architecture Overview](#architecture)  
+- **Monitoring / Logs:** [Environment & Runtime](#environment-variables)  
+- **API Management / Swagger:** [API & Backend](#architecture)  
 - **Production Frontend:** [Vercel App](https://skillsync-five-neon.vercel.app/)  
 - **Production Backend:** [Render API](https://skill-sync-api.onrender.com/)  
 - **Health Check:** [Render Health](https://skill-sync-api.onrender.com/health)  
-- **GitHub Repository:** [Repository](#)  
-- **CI / Pipeline Status:** [GitHub Actions](#)  
+- **Local Setup:** [Docker Compose](#docker-compose)  
+- **Development Guide:** [Local Development](#local-development-without-docker)  
 
 ## Technology Stack
 

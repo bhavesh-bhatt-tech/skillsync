@@ -11,6 +11,8 @@ if (databaseUrl?.includes('__DATABASE_PASS__') && databasePassword) {
 }
 
 const app = express();
+// Disable the X-Powered-By header to avoid disclosing Express version information
+app.disable('x-powered-by');
 const prisma = new PrismaClient();
 
 app.use((req, res, next) => {
@@ -145,6 +147,24 @@ app.put('/api/questions/:id', async (req, res) => {
     resError(res, 500, `Update failed: ${(err as Error).message}`);
   }
 });
+// DELETE /api/questions/:id — delete a question
+app.delete('/api/questions/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) return resError(res, 400, 'Question id is required');
+    await prisma.question.delete({ where: { id } });
+    logger.info('Question deleted', { id });
+    res.json({ success: true });
+  } catch (err) {
+    logger.error('Question delete failed', err, { id: req.params.id });
+    if ((err as { code?: string }).code === 'P2025') {
+      return resError(res, 404, 'Question not found');
+    }
+    resError(res, 500, `Delete failed: ${(err as Error).message}`);
+  }
+});
+
+
 
 // SINGLE BATCH INSERT ENDPOINT (Matches api.ts call)
 app.post('/api/questions/batch', async (req, res) => {
@@ -156,6 +176,13 @@ app.post('/api/questions/batch', async (req, res) => {
       return res.status(400).json({ message: 'Payload must be an array of questions' });
     }
 
+        // Helper to parse field as array or pipe-delimited string
+    const parseArrayField = (field: any): string[] => {
+      if (Array.isArray(field)) return field;
+      if (typeof field === 'string') return field.split('|').map((item: string) => item.trim()).filter(Boolean);
+      return [];
+    };
+
     const formattedQuestions = questions.map((q) => ({
       topic: q.topic || '',
       subtopic: q.subtopic || '',
@@ -163,12 +190,8 @@ app.post('/api/questions/batch', async (req, res) => {
       answer: q.answer || q.answerMarkdown || '',
       type: (q.type || 'CONCEPTUAL').toUpperCase(),
       starterCode: q.starterCode || null,
-      skills: Array.isArray(q.skills) 
-        ? q.skills 
-        : (typeof q.skills === 'string' ? q.skills.split('|').map((s: string) => s.trim()).filter(Boolean) : []),
-      roles: Array.isArray(q.roles) 
-        ? q.roles 
-        : (typeof q.roles === 'string' ? q.roles.split('|').map((r: string) => r.trim()).filter(Boolean) : []),
+      skills: parseArrayField(q.skills),
+      roles: parseArrayField(q.roles),
       minExperience: q.minExperience ? Number(q.minExperience) : 0,
     }));
 
@@ -206,7 +229,12 @@ app.use((error: any, _req: express.Request, res: express.Response, next: express
 });
 
 const PORT = Number(process.env.PORT) || 5000;
-app.listen(PORT, () => logger.info(`Server running on http://localhost:${PORT}`, { logFile: logger.file }));
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => logger.info(`Server running on http://localhost:${PORT}`, { logFile: logger.file }));
+}
+
+export { app };
+
 
 process.on('uncaughtException', (error) => logger.error('Uncaught exception', error));
 process.on('unhandledRejection', (error) => logger.error('Unhandled promise rejection', error));

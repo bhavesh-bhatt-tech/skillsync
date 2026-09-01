@@ -10,12 +10,24 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    include: ['src/**/*.test.{ts,tsx}'],
+    setupFiles: ['./tests/setup.ts'],
+    include: ['tests/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       reportsDirectory: './coverage',
-      exclude: ['src/main.tsx', 'src/vite-env.d.ts'],
+      include: ['src/**/*.{ts,tsx}', 'server/**/*.ts'],
+      exclude: ['src/main.tsx', 'src/vite-env.d.ts', 'src/**/*.stories.tsx'],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
     },
   },
 });
+
+
+
+

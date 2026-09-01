@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import * as XLSX from 'xlsx';
-import { parseQuestionsXlsx } from './xlsx';
+import { parseQuestionsXlsx } from '@/lib/xlsx';
 
 function workbookBuffer(rows: Record<string, string>[]) {
   const sheet = XLSX.utils.json_to_sheet(rows);

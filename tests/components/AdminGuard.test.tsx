@@ -51,11 +51,12 @@ describe('AdminGuard', () => {
     expect(sessionStorage.getItem(ADMIN_KEY_STORAGE)).toBe('correct-key');
   });
 
-  it('logs out successfully when logout button is clicked', () => {
+  it('logs out successfully when logout button is clicked and triggers onLogout callback', () => {
     sessionStorage.setItem(ADMIN_KEY_STORAGE, 'correct-key');
+    const onLogout = vi.fn();
 
     render(
-      <AdminGuard>
+      <AdminGuard onLogout={onLogout}>
         <div>Protected Content</div>
       </AdminGuard>
     );
@@ -65,5 +66,37 @@ describe('AdminGuard', () => {
     fireEvent.click(screen.getByRole('button', { name: /Log out/i }));
     expect(screen.getByText('Admin access')).toBeInTheDocument();
     expect(sessionStorage.getItem(ADMIN_KEY_STORAGE)).toBeNull();
+    expect(onLogout).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls onAuthenticated when a valid session key already exists', () => {
+    sessionStorage.setItem(ADMIN_KEY_STORAGE, 'correct-key');
+    const onAuthenticated = vi.fn();
+
+    render(
+      <AdminGuard onAuthenticated={onAuthenticated}>
+        <div>Protected Content</div>
+      </AdminGuard>
+    );
+
+    expect(onAuthenticated).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('Protected Content')).toBeInTheDocument();
+  });
+
+  it('shows a configuration error when no admin key is configured', () => {
+    // @ts-ignore
+    import.meta.env.VITE_ADMIN_KEY = '';
+
+    render(
+      <AdminGuard>
+        <div>Protected Content</div>
+      </AdminGuard>
+    );
+
+    const input = screen.getByLabelText('Admin key');
+    fireEvent.change(input, { target: { value: 'any-key' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Admin access is not configured on this deployment.');
   });
 });

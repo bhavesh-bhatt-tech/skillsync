@@ -1,16 +1,26 @@
-import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'info';
+type ToastProviderProps = Readonly<{ children: ReactNode }>;
+
 interface Toast {
-  id: number;
+  id: string;
   type: ToastType;
   message: string;
 }
+
 interface ToastContextValue {
   notify: (type: ToastType, message: string) => void;
 }
+
 const ToastContext = createContext<ToastContextValue | null>(null);
+let toastIdCounter = 0;
+
+function createToastId() {
+  toastIdCounter += 1;
+  return `toast-${toastIdCounter}`;
+}
 
 export function useToast() {
   const ctx = useContext(ToastContext);
@@ -18,18 +28,20 @@ export function useToast() {
   return ctx;
 }
 
-export function ToastProvider({ children }: { children: ReactNode }) {
+export function ToastProvider({ children }: ToastProviderProps) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const dismiss = useCallback((id: number) => {
+  const dismiss = useCallback((id: string) => {
     setToasts((t) => t.filter((x) => x.id !== id));
   }, []);
 
   const notify = useCallback((type: ToastType, message: string) => {
-    const id = Date.now() + Math.random();
+    const id = createToastId();
     setToasts((t) => [...t, { id, type, message }]);
     setTimeout(() => dismiss(id), 5000);
   }, [dismiss]);
+
+  const value = useMemo(() => ({ notify }), [notify]);
 
   const styles: Record<ToastType, string> = {
     success: 'border-emerald-500/40 bg-emerald-50 text-emerald-900',
@@ -43,7 +55,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <ToastContext.Provider value={{ notify }}>
+    <ToastContext.Provider value={value}>
       {children}
       <div className="fixed bottom-4 right-4 z-50 flex w-80 flex-col gap-2">
         {toasts.map((t) => (

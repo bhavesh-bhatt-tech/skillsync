@@ -11,10 +11,11 @@ describe('QuestionCard', () => {
     question: 'What is useEffect?',
     answer: 'A side effect hook.',
     type: 'CONCEPTUAL',
+    starter_code: null,
     skills: ['React'],
     roles: ['Frontend'],
     min_experience: 2,
-    createdAt: new Date().toISOString(),
+    created_at: new Date().toISOString(),
   };
 
   const codingQuestion: Question = {
@@ -24,10 +25,11 @@ describe('QuestionCard', () => {
     question: 'Write an identity function.',
     answer: 'function identity<T>(arg: T): T { return arg; }',
     type: 'CODING',
+    starter_code: 'function identity<T>(arg: T): T { return arg; }',
     skills: ['TypeScript'],
     roles: ['Fullstack'],
     min_experience: 3,
-    createdAt: new Date().toISOString(),
+    created_at: new Date().toISOString(),
   };
 
   it('renders conceptual question card', () => {

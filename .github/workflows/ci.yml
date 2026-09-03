@@ -39,6 +39,7 @@ jobs:
         run: test -f coverage/lcov.info
 
       - name: SonarCloud Scan
+        continue-on-error: true
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

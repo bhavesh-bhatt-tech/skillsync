@@ -47,6 +47,20 @@ describe('api client', () => {
     expect(fetchCall).toContain('experience=2');
   });
 
+  it('trims query params and skips empty filters', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    );
+
+    await fetchQuestions({ search: '  redis  ', role: '  ', skill: '', minExperience: 0 });
+
+    const fetchCall = vi.mocked(fetch).mock.calls[0][0] as string;
+    expect(fetchCall).toContain('search=redis');
+    expect(fetchCall).not.toContain('role=');
+    expect(fetchCall).not.toContain('skill=');
+    expect(fetchCall).not.toContain('experience=');
+  });
+
   it('throws error when fetchQuestions fails', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValueOnce(
       new Response(JSON.stringify({ error: 'Database error' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
@@ -117,6 +131,18 @@ describe('api client', () => {
     await vi.advanceTimersByTimeAsync(1200);
     await expect(promise).resolves.toEqual([]);
     expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
+  });
+
+  it('fails after max retries for transient errors', async () => {
+    vi.useFakeTimers();
+    vi.spyOn(global, 'fetch').mockRejectedValue(new Error('offline'));
+
+    const promise = fetchQuestions();
+    await vi.advanceTimersByTimeAsync(7000);
+
+    await expect(promise).rejects.toThrow('offline');
+    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(3);
     vi.useRealTimers();
   });
 

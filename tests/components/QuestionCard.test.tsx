@@ -1,9 +1,13 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { QuestionCard } from '@/components/QuestionCard';
 import type { Question } from '@/lib/types';
 
 describe('QuestionCard', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
   const conceptualQuestion: Question = {
     id: '1',
     topic: 'React',
@@ -46,5 +50,49 @@ describe('QuestionCard', () => {
     expect(screen.getByText('Write an identity function.')).toBeInTheDocument();
     expect(screen.getByText('TypeScript / Generics')).toBeInTheDocument();
     expect(screen.getByText('Min exp: 3+ yrs')).toBeInTheDocument();
+  });
+
+  it('copies coding answer with clipboard api', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(window.navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+
+    render(<QuestionCard question={codingQuestion} />);
+    const copyButton = screen.getByRole('button', { name: 'Copy' });
+    fireEvent.click(copyButton);
+
+    expect(await screen.findByText('Copied')).toBeInTheDocument();
+    expect(writeText).toHaveBeenCalledWith(codingQuestion.answer);
+  });
+
+  it('uses fallback copy when clipboard api is unavailable', async () => {
+    Object.defineProperty(window.navigator, 'clipboard', {
+      configurable: true,
+      value: undefined,
+    });
+    const execCommandSpy = vi.spyOn(document, 'execCommand').mockReturnValue(true);
+
+    render(<QuestionCard question={codingQuestion} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
+
+    expect(await screen.findByText('Copied')).toBeInTheDocument();
+    expect(execCommandSpy).toHaveBeenCalledWith('copy');
+  });
+
+  it('handles copy errors without breaking ui', async () => {
+    const writeText = vi.fn().mockRejectedValue(new Error('denied'));
+    Object.defineProperty(window.navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(<QuestionCard question={codingQuestion} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
+
+    expect(await screen.findByText('Copy')).toBeInTheDocument();
+    expect(consoleSpy).toHaveBeenCalled();
   });
 });

@@ -1,9 +1,21 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { fireEvent, render, screen, act } from '@testing-library/react';
 import { Markdown } from '@/components/Markdown';
 import '@testing-library/jest-dom/vitest';
 
 describe('Markdown', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    Object.defineProperty(window.navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+    });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('renders markdown paragraphs and bold text', () => {
     render(<Markdown content="Hello **World**" />);
     expect(screen.getByText('World')).toBeInTheDocument();
@@ -37,5 +49,32 @@ describe('Markdown', () => {
     render(<Markdown content="```javascript\nlet a = 1;" />);
     expect(screen.getByText(/copy/i)).toBeInTheDocument();
     expect(screen.getByText(/javascript/i)).toBeInTheDocument();
+  });
+
+  it('copies code from code block', async () => {
+    vi.useFakeTimers();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(window.navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+
+    render(<Markdown content={'```js\nconst a = 1;\n```'} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
+
+    expect(writeText).toHaveBeenCalledWith('const a = 1;\n');
+    expect(await screen.findByText('Copied')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1500);
+    });
+    expect(screen.getByText('Copy')).toBeInTheDocument();
+  });
+
+  it('normalizes inline markdown table into rows', () => {
+    render(<Markdown content={'| col1 | col2 | --- | --- | a | b |'} />);
+    expect(screen.getByRole('table')).toBeInTheDocument();
+    expect(screen.getByText('col1')).toBeInTheDocument();
+    expect(screen.getByText('a')).toBeInTheDocument();
   });
 });

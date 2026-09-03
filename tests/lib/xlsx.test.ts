@@ -24,4 +24,47 @@ describe('parseQuestionsXlsx', () => {
     expect(result.errors).toEqual([]);
     expect(result.rows[0]).toMatchObject({ type: 'PLATFORM-ENGINEERING', skills: ['Docker', 'Linux'] });
   });
+
+  it('reports missing required columns', () => {
+    const result = parseQuestionsXlsx(workbookBuffer([{ topic: 'A', subtopic: 'B' }]));
+
+    expect(result.rows).toEqual([]);
+    expect(result.errors[0]).toContain('Missing required columns');
+  });
+
+  it('collects row level errors for incomplete rows', () => {
+    const result = parseQuestionsXlsx(workbookBuffer([{
+      topic: 'Cloud',
+      subtopic: '',
+      question: 'Q',
+      answer: 'A',
+      type: 'conceptual',
+    }]));
+
+    expect(result.rows).toEqual([]);
+    expect(result.errors[0]).toContain('missing required field value');
+  });
+
+  it('normalizes minExperience and starterCode fields', () => {
+    const result = parseQuestionsXlsx(workbookBuffer([{
+      topic: 'Cloud',
+      subtopic: 'Kubernetes',
+      question: 'What is a pod?',
+      answer: 'Smallest deployable unit.',
+      type: 'conceptual',
+      minExperience: '-10',
+      starterCode: '',
+      skills: 'k8s; docker',
+      roles: 'platform; sre',
+    }]));
+
+    expect(result.errors).toEqual([]);
+    expect(result.rows[0]).toMatchObject({
+      min_experience: 0,
+      starter_code: null,
+      skills: ['k8s', 'docker'],
+      roles: ['platform', 'sre'],
+      type: 'CONCEPTUAL',
+    });
+  });
 });

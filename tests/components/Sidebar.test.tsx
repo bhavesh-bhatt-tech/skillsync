@@ -1,9 +1,14 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Sidebar } from '@/components/Sidebar';
 import type { Question, Filters } from '@/lib/types';
 
 describe('Sidebar', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    window.localStorage.clear();
+  });
+
   const sampleQuestions: Question[] = [
     {
       id: '1',
@@ -126,5 +131,75 @@ describe('Sidebar', () => {
     const clearButton = screen.getByText('Clear All');
     fireEvent.click(clearButton);
     expect(onFiltersChange).toHaveBeenCalledWith({ search: '', role: '', skills: [], minExperience: 0 });
+  });
+
+  it('toggles filters panel visibility', () => {
+    render(
+      <Sidebar
+        questions={sampleQuestions}
+        filters={defaultFilters}
+        onFiltersChange={() => {}}
+        selectedId={null}
+        onSelect={() => {}}
+      />
+    );
+
+    expect(screen.getByPlaceholderText('Search titles & answers...')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Hide Filters' }));
+    expect(screen.queryByPlaceholderText('Search titles & answers...')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Show Filters' }));
+    expect(screen.getByPlaceholderText('Search titles & answers...')).toBeInTheDocument();
+  });
+
+  it('updates role and minimum experience filters', () => {
+    const onFiltersChange = vi.fn();
+    render(
+      <Sidebar
+        questions={sampleQuestions}
+        filters={defaultFilters}
+        onFiltersChange={onFiltersChange}
+        selectedId={null}
+        onSelect={() => {}}
+      />
+    );
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Frontend' } });
+    expect(onFiltersChange).toHaveBeenCalledWith(expect.objectContaining({ role: 'Frontend' }));
+
+    fireEvent.change(screen.getByPlaceholderText('Min Experience (years)'), { target: { value: '-5' } });
+    expect(onFiltersChange).toHaveBeenCalledWith(expect.objectContaining({ minExperience: 0 }));
+  });
+
+  it('hides skills list and persists preference', () => {
+    render(
+      <Sidebar
+        questions={sampleQuestions}
+        filters={defaultFilters}
+        onFiltersChange={() => {}}
+        selectedId={null}
+        onSelect={() => {}}
+      />
+    );
+
+    expect(screen.getByText('Java 21')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Hide All' }));
+    expect(screen.queryByText('Java 21')).not.toBeInTheDocument();
+    expect(window.localStorage.getItem('skillsync.library.showSkills')).toBe('false');
+  });
+
+  it('respects legacy localStorage key fallback for skills visibility', () => {
+    window.localStorage.setItem('interview-manager.library.showSkills', 'false');
+
+    render(
+      <Sidebar
+        questions={sampleQuestions}
+        filters={defaultFilters}
+        onFiltersChange={() => {}}
+        selectedId={null}
+        onSelect={() => {}}
+      />
+    );
+
+    expect(screen.queryByText('Java 21')).not.toBeInTheDocument();
   });
 });

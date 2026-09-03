@@ -1,12 +1,17 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import { Logger } from './logger';
+import { logger } from './logger';
 
-const app = express();
+export const app = express();
 const prisma = new PrismaClient();
-const logger = new Logger('server');
+
+app.disable('x-powered-by');
 
 app.use(express.json());
+
+app.get('/health', (_req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 // Middleware for admin authentication
 app.use((req, res, next) => {
@@ -50,7 +55,7 @@ app.get('/api/questions', async (req, res) => {
     // FIX: Validate and convert experience safely instead of string concatenation
     if (experience) {
       const exp = Number(experience);
-      if (!isNaN(exp) && exp > 0) {
+      if (!Number.isNaN(exp) && exp > 0) {
         where.minExperience = { lte: exp };
       }
     }
@@ -151,9 +156,69 @@ app.delete('/api/questions/:id', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`);
+app.post('/api/questions/batch', async (req, res) => {
+  try {
+    const payload = req.body;
+    if (!Array.isArray(payload)) {
+      return res.status(400).json({ message: 'Payload must be an array of questions' });
+    }
+
+    let inserted = 0;
+    let updated = 0;
+
+    await prisma.$transaction(async (tx: any) => {
+      for (const item of payload) {
+        const validation = validateQuestionInput(item);
+        if (!validation.valid) {
+          continue;
+        }
+
+        const normalized = {
+          topic: item.topic.trim(),
+          subtopic: item.subtopic.trim(),
+          question: item.question.trim(),
+          answer: item.answer.trim(),
+          type: String(item.type || 'CONCEPTUAL').toUpperCase(),
+          starterCode: item.starterCode ?? null,
+          skills: Array.isArray(item.skills) ? item.skills : [],
+          roles: Array.isArray(item.roles) ? item.roles : [],
+          minExperience: Math.max(0, Number(item.minExperience) || 0),
+        };
+
+        const existing = await tx.question.findFirst({
+          where: {
+            topic: normalized.topic,
+            subtopic: normalized.subtopic,
+            question: normalized.question,
+          },
+        });
+
+        if (existing) {
+          await tx.question.update({ where: { id: existing.id }, data: normalized });
+          updated += 1;
+        } else {
+          await tx.question.create({ data: normalized });
+          inserted += 1;
+        }
+      }
+    });
+
+    const count = inserted + updated;
+    logger.info('Batch questions processed', { count, inserted, updated });
+    res.status(200).json({ count, inserted, updated });
+  } catch (err) {
+    logger.error('Batch question processing failed', err);
+    resError(res, 500, `Batch processing failed: ${(err as Error).message}`);
+  }
 });
+
+const PORT = process.env.PORT || 3000;
+const isTestRuntime = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true' || process.env.VITEST === '1';
+
+if (!isTestRuntime) {
+  app.listen(PORT, () => {
+    logger.info(`Server running on port ${PORT}`);
+  });
+}
 
 export default app;

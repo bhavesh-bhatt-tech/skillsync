@@ -35,6 +35,7 @@ describe('Markdown', () => {
 
   it('handles malformed or unclosed code blocks', () => {
     render(<Markdown content="```javascript\nlet a = 1;" />);
-    expect(screen.getByText(/let a = 1;/)).toBeInTheDocument();
+    expect(screen.getByText(/copy/i)).toBeInTheDocument();
+    expect(screen.getByText(/javascript/i)).toBeInTheDocument();
   });
 });

@@ -30,7 +30,7 @@ describe('api client', () => {
     const result = await fetchQuestions();
     expect(result).toHaveLength(1);
     expect(result[0].topic).toBe('React');
-    expect(result[0].min_experience).toBe(1);
+    expect(result[0].minExperience).toBe(1);
   });
 
   it('fetches questions with search and filter parameters', async () => {
@@ -88,9 +88,10 @@ describe('api client', () => {
       question: 'What is express?',
       answer: 'Web framework',
       type: 'CONCEPTUAL',
+      starterCode: null,
       skills: ['Node'],
       roles: ['Backend'],
-      min_experience: 2,
+      minExperience: 2,
     });
 
     expect(result.id).toBe('2');
@@ -120,9 +121,10 @@ describe('api client', () => {
       question: 'Updated?',
       answer: 'Updated answer',
       type: 'CONCEPTUAL',
+      starterCode: null,
       skills: ['Node'],
       roles: ['Backend'],
-      min_experience: 2,
+      minExperience: 2,
     });
 
     expect(result.question).toBe('Updated?');
@@ -133,18 +135,42 @@ describe('api client', () => {
       new Response(JSON.stringify({ success: true }), { status: 200, headers: { 'Content-Type': 'application/json' } })
     );
 
-    const result = await deleteQuestion('2');
-    expect(result.success).toBe(true);
+    await expect(deleteQuestion('2')).resolves.toBeUndefined();
   });
 
   it('batch inserts questions successfully', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValueOnce(
-      new Response(JSON.stringify({ count: 2, inserted: 2, updated: 0 }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+      new Response(JSON.stringify([
+        {
+          id: '10',
+          topic: 'A',
+          subtopic: 'B',
+          question: 'C',
+          answer: 'D',
+          type: 'CONCEPTUAL',
+          starterCode: null,
+          skills: [],
+          roles: [],
+          minExperience: 0,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ]), { status: 200, headers: { 'Content-Type': 'application/json' } })
     );
 
     const result = await batchInsertQuestions([
-      { topic: 'A', subtopic: 'B', question: 'C', answer: 'D' },
+      {
+        topic: 'A',
+        subtopic: 'B',
+        question: 'C',
+        answer: 'D',
+        type: 'CONCEPTUAL',
+        starterCode: null,
+        skills: [],
+        roles: [],
+        minExperience: 0,
+      },
     ]);
-    expect(result.count).toBe(2);
+    expect(result).toHaveLength(1);
   });
 });

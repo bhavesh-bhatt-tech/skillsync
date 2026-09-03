@@ -1,16 +1,23 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { AdminPanel } from '@/components/AdminPanel';
+import { ToastProvider } from '@/components/Toast';
 import type { Question } from '@/lib/types';
 import * as api from '@/lib/api';
 
 vi.mock('@/lib/api', () => ({
   fetchAdminQuestions: vi.fn(),
+  fetchAllQuestions: vi.fn(),
   createQuestion: vi.fn(),
   updateQuestion: vi.fn(),
   deleteQuestion: vi.fn(),
   batchInsertQuestions: vi.fn(),
 }));
+
+function renderWithProviders(ui: ReactElement) {
+  return render(<ToastProvider>{ui}</ToastProvider>);
+}
 
 describe('AdminPanel', () => {
   const sampleQuestions: Question[] = [
@@ -34,7 +41,7 @@ describe('AdminPanel', () => {
   });
 
   it('renders question table and headers', () => {
-    render(
+    renderWithProviders(
       <AdminPanel
         questions={sampleQuestions}
         loading={false}
@@ -46,15 +53,15 @@ describe('AdminPanel', () => {
     );
 
     expect(screen.getByText('What are virtual threads?')).toBeInTheDocument();
-    expect(screen.getByText('Java / Concurrency')).toBeInTheDocument();
+    expect(screen.getByText(/Manage Questions · Total: 1/i)).toBeInTheDocument();
   });
 
   it('handles question deletion with confirmation', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
-    vi.mocked(api.deleteQuestion).mockResolvedValueOnce({ success: true });
+    vi.mocked(api.deleteQuestion).mockResolvedValueOnce();
     const onQuestionsChanged = vi.fn();
 
-    render(
+    renderWithProviders(
       <AdminPanel
         questions={sampleQuestions}
         loading={false}
@@ -65,7 +72,7 @@ describe('AdminPanel', () => {
       />
     );
 
-    const deleteBtn = screen.getByTitle('Delete');
+    const deleteBtn = screen.getByRole('button', { name: /delete question/i });
     fireEvent.click(deleteBtn);
 
     await waitFor(() => {
@@ -78,7 +85,7 @@ describe('AdminPanel', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(false);
     const onQuestionsChanged = vi.fn();
 
-    render(
+    renderWithProviders(
       <AdminPanel
         questions={sampleQuestions}
         loading={false}
@@ -89,7 +96,7 @@ describe('AdminPanel', () => {
       />
     );
 
-    const deleteBtn = screen.getByTitle('Delete');
+    const deleteBtn = screen.getByRole('button', { name: /delete question/i });
     fireEvent.click(deleteBtn);
 
     expect(api.deleteQuestion).not.toHaveBeenCalled();
@@ -97,7 +104,7 @@ describe('AdminPanel', () => {
   });
 
   it('shows error when uploading non-xlsx file', async () => {
-    render(
+    renderWithProviders(
       <AdminPanel
         questions={sampleQuestions}
         loading={false}

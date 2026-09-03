@@ -17,7 +17,7 @@ describe('parseQuestionsXlsx', () => {
       question: 'What is a container?',
       answer: 'An isolated process.',
       type: 'PLATFORM-ENGINEERING',
-      skills: 'Docker|Linux',
+      skills: 'Docker,Linux',
       roles: 'Platform Engineer',
     }]));
 

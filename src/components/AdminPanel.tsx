@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useRef, useState, useCallback, useId, type RefObject, type DragEvent } from 'react';
 import {
   Plus, Save, X, UploadCloud, FileDown, Trash2, Pencil, Loader2, FileSpreadsheet, ChevronLeft, ChevronRight,
   Bold, Italic, Heading2, Code2,
@@ -19,7 +19,8 @@ interface AdminPanelProps {
   onCancelEdit: () => void;
 }
 
-export function AdminPanel({ questions, loading, editing, onQuestionsChanged, onStartEdit, onCancelEdit }: AdminPanelProps) {
+export function AdminPanel(props: Readonly<AdminPanelProps>) {
+  const { questions, loading, editing, onQuestionsChanged, onStartEdit, onCancelEdit } = props;
   const { notify } = useToast();
   const [dragOver, setDragOver] = useState(false);
   const [importing, setImporting] = useState(false);
@@ -33,7 +34,9 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
     setPage((current) => Math.min(current, pageCount));
   }, [pageCount]);
 
-  const handleFile = async (file: File) => {
+
+
+  const handleFile = useCallback(async (file: File) => {
     if (!file.name.toLowerCase().endsWith('.xlsx')) {
       notify('error', 'Please upload an .xlsx file');
       return;
@@ -50,8 +53,20 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
         notify('error', `Spreadsheet errors: ${errors.slice(0, 3).join('; ')}${errors.length > 3 ? ' …' : ''}`);
         if (rows.length === 0) { setImporting(false); return; }
       }
-      const result = await batchInsertQuestions(rows);
-      notify('success', `Imported ${result.count} question${result.count === 1 ? '' : 's'} (${result.inserted} new, ${result.updated} updated)`);
+      const payload = rows.map((r) => ({
+        topic: r.topic,
+        subtopic: r.subtopic,
+        question: r.question,
+        answer: r.answer,
+        type: r.type,
+        starterCode: r.starter_code ?? null,
+        skills: r.skills,
+        roles: r.roles,
+        minExperience: r.min_experience,
+      }));
+
+      const result = await batchInsertQuestions(payload);
+      notify('success', `Imported ${result.length} question${result.length === 1 ? '' : 's'}`);
       onQuestionsChanged();
     } catch (e) {
       notify('error', `Import failed: ${(e as Error).message}`);
@@ -59,9 +74,22 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
       setImporting(false);
       if (fileRef.current) fileRef.current.value = '';
     }
-  };
+  }, [notify, onQuestionsChanged]);
 
-  const handleExport = async () => {
+  const onDragOver = useCallback((e: DragEvent<HTMLDivElement>) => { e.preventDefault(); setDragOver(true); }, [setDragOver]);
+  const onDragLeave = useCallback(() => setDragOver(false), [setDragOver]);
+  const onDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault(); setDragOver(false);
+    const f = e.dataTransfer.files?.[0];
+    if (f) handleFile(f);
+  }, [handleFile]);
+
+  const handleChooseFile = useCallback(() => fileRef.current?.click(), []);
+  const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]; if (f) handleFile(f);
+  }, [handleFile]);
+
+  const handleExport = useCallback(async () => {
     setExporting(true);
     try {
       const all = await fetchAllQuestions();
@@ -73,10 +101,11 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
     } finally {
       setExporting(false);
     }
-  };
+  }, [notify]);
 
-  const handleDelete = async (q: Question) => {
-    if (!confirm(`Delete "${q.question}"?`)) return;
+  const handleDelete = useCallback(async (q: Question) => {
+    const confirmed = typeof window !== 'undefined' ? window.confirm(`Delete "${q.question}"?`) : true;
+    if (!confirmed) return;
     try {
       await deleteQuestion(q.id);
       notify('success', 'Question deleted');
@@ -84,7 +113,7 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
     } catch (e) {
       notify('error', `Delete failed: ${(e as Error).message}`);
     }
-  };
+  }, [notify, onQuestionsChanged]);
 
   return (
     <div className="flex h-full flex-col overflow-y-auto bg-slate-50 p-4 sm:p-6">
@@ -102,13 +131,9 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
             Columns: topic, subtopic, question, answer, type, starterCode, skills, roles, minExperience
           </p>
           <div
-            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={(e) => {
-              e.preventDefault(); setDragOver(false);
-              const f = e.dataTransfer.files?.[0];
-              if (f) handleFile(f);
-            }}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
             className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 text-center transition ${
               dragOver ? 'border-sky-500 bg-sky-50' : 'border-slate-300 bg-slate-50'
             }`}
@@ -123,7 +148,7 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
             </p>
             <p className="text-xs text-slate-400">or</p>
             <button
-              onClick={() => fileRef.current?.click()}
+              onClick={handleChooseFile}
               disabled={importing}
               className="mt-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-700 disabled:opacity-50"
             >
@@ -134,7 +159,7 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
               type="file"
               accept=".xlsx"
               className="hidden"
-              onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
+              onChange={handleFileInputChange}
             />
           </div>
           <div className="mt-4 flex flex-wrap gap-3">
@@ -175,10 +200,22 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
                   {q.type === 'CODING' ? 'CODE' : 'Q'}
                 </span>
                 <span className="flex-1 truncate text-sm text-slate-700">{q.question}</span>
-                <button onClick={() => onStartEdit(q)} className="rounded p-1 text-slate-400 hover:bg-slate-200 hover:text-sky-700">
+                <button
+                  type="button"
+                  aria-label="Edit question"
+                  title="Edit"
+                  onClick={() => onStartEdit(q)}
+                  className="rounded p-1 text-slate-400 hover:bg-slate-200 hover:text-sky-700"
+                >
                   <Pencil className="h-4 w-4" />
                 </button>
-                <button onClick={() => handleDelete(q)} className="rounded p-1 text-slate-400 hover:bg-rose-100 hover:text-rose-600">
+                <button
+                  type="button"
+                  aria-label="Delete question"
+                  title="Delete"
+                  onClick={() => handleDelete(q)}
+                  className="rounded p-1 text-slate-400 hover:bg-rose-100 hover:text-rose-600"
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
@@ -186,11 +223,11 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
           </div>
           {!loading && pageCount > 1 && (
             <div className="mt-4 flex items-center justify-center gap-3 text-sm text-slate-600">
-              <button type="button" aria-label="Previous page" title="Previous page" disabled={page === 1} onClick={() => setPage(page - 1)} className="rounded-md border border-slate-300 bg-white p-1.5 hover:border-sky-400 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40">
+              <button type="button" aria-label="Previous page" title="Previous page" disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="rounded-md border border-slate-300 bg-white p-1.5 hover:border-sky-400 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40">
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <span>Page {page} of {pageCount}</span>
-              <button type="button" aria-label="Next page" title="Next page" disabled={page === pageCount} onClick={() => setPage(page + 1)} className="rounded-md border border-slate-300 bg-white p-1.5 hover:border-sky-400 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40">
+              <button type="button" aria-label="Next page" title="Next page" disabled={page === pageCount} onClick={() => setPage((p) => p + 1)} className="rounded-md border border-slate-300 bg-white p-1.5 hover:border-sky-400 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-40">
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -201,13 +238,11 @@ export function AdminPanel({ questions, loading, editing, onQuestionsChanged, on
   );
 }
 
-function FormattingToolbar({
-  inputRef,
-  onChange,
-}: {
+function FormattingToolbar(props: Readonly<{
   inputRef: RefObject<HTMLTextAreaElement>;
   onChange: (value: string) => void;
-}) {
+}>) {
+  const { inputRef, onChange } = props;
   const applyFormat = (prefix: string, suffix: string, placeholder: string) => {
     const input = inputRef.current;
     if (!input) return;
@@ -246,9 +281,8 @@ function FormattingToolbar({
   );
 }
 
-function QuestionForm({
-  editing, onSaved, onCancel,
-}: { editing: Question | null; onSaved: () => void; onCancel: () => void }) {
+function QuestionForm(props: Readonly<{ editing: Question | null; onSaved: () => void; onCancel: () => void }>) {
+  const { editing, onSaved, onCancel } = props;
   const { notify } = useToast();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<QuestionInput>({
@@ -266,6 +300,7 @@ function QuestionForm({
   const [rolesText, setRolesText] = useState(form.roles.join(', '));
   const questionRef = useRef<HTMLTextAreaElement>(null);
   const answerRef = useRef<HTMLTextAreaElement>(null);
+  const id = useId();
 
   const set = <K extends keyof QuestionInput>(k: K, v: QuestionInput[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -275,19 +310,24 @@ function QuestionForm({
       notify('error', 'Topic, subtopic, question, and answer are all required');
       return;
     }
-    const payload: QuestionInput = {
-      ...form,
+    const apiPayload = {
+      topic: form.topic,
+      subtopic: form.subtopic,
+      question: form.question,
+      answer: form.answer,
+      type: form.type as any,
+      starterCode: form.type === 'CODING' ? form.starter_code ?? null : null,
       skills: skillsText.split(',').map((s) => s.trim()).filter(Boolean),
       roles: rolesText.split(',').map((s) => s.trim()).filter(Boolean),
-      starter_code: form.type === 'CODING' ? form.starter_code : null,
+      minExperience: form.min_experience,
     };
     setSaving(true);
     try {
       if (editing) {
-        await updateQuestion(editing.id, payload);
+        await updateQuestion(editing.id, apiPayload);
         notify('success', 'Question updated');
       } else {
-        await createQuestion(payload);
+        await createQuestion(apiPayload);
         notify('success', 'Question created');
       }
       onSaved();
@@ -316,22 +356,23 @@ function QuestionForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Topic *</label>
-          <input className={inputCls} value={form.topic} onChange={(e) => set('topic', e.target.value)} placeholder="e.g. Java" />
+          <label htmlFor={`${id}-topic`} className="mb-1 block text-xs font-medium text-slate-500">Topic *</label>
+          <input id={`${id}-topic`} className={inputCls} value={form.topic} onChange={(e) => set('topic', e.target.value)} placeholder="e.g. Java" />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Subtopic *</label>
-          <input className={inputCls} value={form.subtopic} onChange={(e) => set('subtopic', e.target.value)} placeholder="e.g. Concurrency" />
+          <label htmlFor={`${id}-subtopic`} className="mb-1 block text-xs font-medium text-slate-500">Subtopic *</label>
+          <input id={`${id}-subtopic`} className={inputCls} value={form.subtopic} onChange={(e) => set('subtopic', e.target.value)} placeholder="e.g. Concurrency" />
         </div>
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-slate-500">question *</label>
+          <label htmlFor={`${id}-question`} className="mb-1 block text-xs font-medium text-slate-500">question *</label>
           <FormattingToolbar inputRef={questionRef} onChange={(value) => set('question', value)} />
-          <textarea ref={questionRef} className={`${inputCls} min-h-[72px] rounded-t-none`} value={form.question} onChange={(e) => set('question', e.target.value)} placeholder="Question question" />
+          <textarea id={`${id}-question`} ref={questionRef} className={`${inputCls} min-h-[72px] rounded-t-none`} value={form.question} onChange={(e) => set('question', e.target.value)} placeholder="Question question" />
         </div>
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-slate-500">Answer (Markdown) *</label>
+          <label htmlFor={`${id}-answer`} className="mb-1 block text-xs font-medium text-slate-500">Answer (Markdown) *</label>
           <FormattingToolbar inputRef={answerRef} onChange={(value) => set('answer', value)} />
           <textarea
+            id={`${id}-answer`}
             ref={answerRef}
             className={`${inputCls} min-h-[140px] rounded-t-none font-mono text-xs`}
             value={form.answer}
@@ -340,8 +381,9 @@ function QuestionForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Type</label>
+          <label htmlFor={`${id}-type`} className="mb-1 block text-xs font-medium text-slate-500">Type</label>
           <input
+            id={`${id}-type`}
             className={inputCls}
             value={form.type}
             onChange={(e) => set('type', e.target.value as QuestionType)}
@@ -349,8 +391,9 @@ function QuestionForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Min Experience (yrs)</label>
+          <label htmlFor={`${id}-minExperience`} className="mb-1 block text-xs font-medium text-slate-500">Min Experience (yrs)</label>
           <input
+            id={`${id}-minExperience`}
             type="number" min={0} max={30}
             className={inputCls}
             value={form.min_experience}
@@ -359,8 +402,9 @@ function QuestionForm({
         </div>
         {form.type === 'CODING' && (
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-medium text-slate-500">Starter Code</label>
+            <label htmlFor={`${id}-starter`} className="mb-1 block text-xs font-medium text-slate-500">Starter Code</label>
             <textarea
+              id={`${id}-starter`}
               className={`${inputCls} min-h-[120px] font-mono text-xs`}
               value={form.starter_code ?? ''}
               onChange={(e) => set('starter_code', e.target.value)}
@@ -369,12 +413,12 @@ function QuestionForm({
           </div>
         )}
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Skills (comma-separated)</label>
-          <input className={inputCls} value={skillsText} onChange={(e) => setSkillsText(e.target.value)} placeholder="Java 21, Spring Boot" />
+          <label htmlFor={`${id}-skills`} className="mb-1 block text-xs font-medium text-slate-500">Skills (comma-separated)</label>
+          <input id={`${id}-skills`} className={inputCls} value={skillsText} onChange={(e) => setSkillsText(e.target.value)} placeholder="Java 21, Spring Boot" />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Roles (comma-separated)</label>
-          <input className={inputCls} value={rolesText} onChange={(e) => setRolesText(e.target.value)} placeholder="Tech Lead, Software Architect" />
+          <label htmlFor={`${id}-roles`} className="mb-1 block text-xs font-medium text-slate-500">Roles (comma-separated)</label>
+          <input id={`${id}-roles`} className={inputCls} value={rolesText} onChange={(e) => setRolesText(e.target.value)} placeholder="Tech Lead, Software Architect" />
         </div>
       </div>
 

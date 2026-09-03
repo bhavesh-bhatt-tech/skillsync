@@ -18,12 +18,12 @@ describe('App', () => {
         subtopic: 'Caching',
         question: 'Explain Redis caching strategies',
         answer: 'Write-through vs Cache-aside',
-        type: 'SYSTEM-DESIGN',
-        starter_code: null,
+        type: 'SYSTEM_DESIGN',
+        starterCode: null,
         skills: ['Redis'],
         roles: ['Architect'],
-        min_experience: 5,
-        created_at: new Date().toISOString(),
+        minExperience: 5,
+        createdAt: new Date().toISOString(),
       },
     ]);
   });
@@ -48,11 +48,11 @@ describe('App', () => {
         question: 'What is middleware?',
         answer: 'A chain of handlers',
         type: 'CONCEPTUAL',
-        starter_code: null,
+        starterCode: null,
         skills: ['Node'],
         roles: ['Backend'],
-        min_experience: 2,
-        created_at: new Date().toISOString(),
+        minExperience: 2,
+        createdAt: new Date().toISOString(),
       },
     ]);
 
@@ -85,12 +85,12 @@ describe('App', () => {
       subtopic: index % 2 === 0 ? 'Caching' : 'Scaling',
       question: `Question ${index + 1}`,
       answer: 'Example answer',
-      type: 'SYSTEM-DESIGN',
-      starter_code: null,
+      type: 'SYSTEM_DESIGN' as const,
+      starterCode: null,
       skills: ['System Design'],
       roles: ['Architect'],
-      min_experience: 5,
-      created_at: new Date().toISOString(),
+      minExperience: 5,
+      createdAt: new Date().toISOString(),
     }));
 
     vi.mocked(api.fetchQuestions).mockResolvedValue(manyQuestions);
@@ -104,7 +104,8 @@ describe('App', () => {
     fireEvent.click(screen.getByLabelText('Next page'));
 
     await waitFor(() => {
-      expect(screen.getByText('Question 11')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Question 11' })).toBeInTheDocument();
+      expect(screen.getByText('Page 2 of 2')).toBeInTheDocument();
     });
   });
 });

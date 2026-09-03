@@ -25,3 +25,16 @@ dist-ssr
 .neon
 temp_analysis/ 
 temp_analysis/ 
+
+# test artifacts
+coverage/
+vitest-junit.xml
+vitest-report.json
+server-junit.xml
+
+# local tooling state
+.sonarlint/
+.clinerules/
+
+# local MCP/agent instructions
+.github/instructions/sonarqube_mcp.instructions.md

@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Copy, Check, Code2, FileText, Briefcase, GraduationCap } from 'lucide-react';
 import type { Question } from '@/lib/types';
 import { Markdown } from './Markdown';
 
-export function QuestionCard({ question }: { question: Question }) {
+export function QuestionCard({ question }: Readonly<{ question: Question }>) {
   if (question.type === 'CODING') {
     return <CodingCard question={question} />;
   }
   return <ConceptualCard question={question} />;
 }
 
-function MetaRow({ question }: { question: Question }) {
+function MetaRow({ question }: Readonly<{ question: Question }>) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {question.roles.map((r) => (
@@ -28,7 +28,7 @@ function MetaRow({ question }: { question: Question }) {
   );
 }
 
-function ConceptualCard({ question }: { question: Question }) {
+function ConceptualCard({ question }: Readonly<{ question: Question }>) {
   return (
     <article className="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-sky-600">
@@ -44,13 +44,48 @@ function ConceptualCard({ question }: { question: Question }) {
   );
 }
 
-function CodingCard({ question }: { question: Question }) {
+function CodingCard({ question }: Readonly<{ question: Question }>) {
   const [copied, setCopied] = useState(false);
 
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   const copy = async () => {
-    await navigator.clipboard.writeText(question.answer);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+      const textToCopy = question.answer ?? '';
+
+      if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        await navigator.clipboard.writeText(textToCopy);
+      } else if (typeof document !== 'undefined') {
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'absolute';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+      }
+
+      setCopied(true);
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = window.setTimeout(() => setCopied(false), 1500);
+    } catch (err) {
+      // Log the error for observability and avoid breaking the UI by not rethrowing.
+      // eslint-disable-next-line no-console
+      console.error('Failed to copy answer to clipboard', err);
+      setCopied(false);
+    }
   };
 
   return (

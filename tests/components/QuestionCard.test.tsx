@@ -72,13 +72,17 @@ describe('QuestionCard', () => {
       configurable: true,
       value: undefined,
     });
-    const execCommandSpy = vi.spyOn(document, 'execCommand').mockReturnValue(true);
+    const execCommand = vi.fn().mockReturnValue(true);
+    Object.defineProperty(document, 'execCommand', {
+      configurable: true,
+      value: execCommand,
+    });
 
     render(<QuestionCard question={codingQuestion} />);
     fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
 
     expect(await screen.findByText('Copied')).toBeInTheDocument();
-    expect(execCommandSpy).toHaveBeenCalledWith('copy');
+    expect(execCommand).toHaveBeenCalledWith('copy');
   });
 
   it('handles copy errors without breaking ui', async () => {

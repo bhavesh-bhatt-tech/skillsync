@@ -117,7 +117,7 @@ export function Sidebar({
                 <label className="text-sm font-medium text-slate-700">Skills</label>
                 <button
                   type="button"
-                  onClick={() => toggleSkill('all')}
+                  onClick={() => setShowSkills((value) => !value)}
                   className="text-xs text-slate-600 hover:text-slate-900"
                 >
                   {showSkills ? 'Hide' : 'Show'} All

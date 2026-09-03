@@ -1,10 +1,15 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { fetchQuestions, fetchAdminQuestions, createQuestion, updateQuestion, deleteQuestion, batchInsertQuestions, fetchAllQuestions } from '@/lib/api';
 
 describe('api client', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     sessionStorage.clear();
+  });
+
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   it('fetches questions successfully without filters', async () => {
@@ -138,12 +143,10 @@ describe('api client', () => {
     vi.useFakeTimers();
     vi.spyOn(global, 'fetch').mockRejectedValue(new Error('offline'));
 
-    const promise = fetchQuestions();
-    await vi.advanceTimersByTimeAsync(7000);
-
-    await expect(promise).rejects.toThrow('offline');
+    const assertion = expect(fetchQuestions()).rejects.toThrow('offline');
+    await vi.advanceTimersByTimeAsync(3000);
+    await assertion;
     expect(vi.mocked(fetch)).toHaveBeenCalledTimes(3);
-    vi.useRealTimers();
   });
 
   it('creates a question successfully', async () => {

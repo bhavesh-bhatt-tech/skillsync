@@ -9,35 +9,16 @@ permissions:
   contents: read
 
 env:
-  SONAR_CI_SCAN: 'false' # set to 'true' only if you switch back to CI-based Sonar analysis
-
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Generate Prisma client
-        run: npx prisma generate
-
+  SONAR_CI_SCAN: 'true'
+# ...existing code...
       - name: Run unit tests with coverage
-        run: npm run test:coverage -- --reporter=default --reporter=junit --outputFile=coverage/test-report.xml
+        run: npm run test:coverage
+
+      - name: Verify lcov exists
+        run: test -f coverage/lcov.info
 
       - name: SonarCloud Scan
-        if: ${{ env.SONAR_CI_SCAN == 'true' }}
         uses: SonarSource/sonarcloud-github-action@master
-        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

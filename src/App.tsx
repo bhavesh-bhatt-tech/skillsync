@@ -2,12 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, ChevronLeft, ChevronRight, Settings2, Loader2, Library } from 'lucide-react';
 import { ToastProvider, useToast } from './components/Toast';
 import { Sidebar } from './components/Sidebar';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { QuestionCard } from './components/QuestionCard';
 import { AdminPanel } from './components/AdminPanel';
 import { AdminGuard } from './components/AdminGuard';
-import { fetchAdminQuestions, fetchQuestions } from '@/lib/api';
-import type { Filters, Question } from '@/lib/types';
+import { fetchAdminQuestions, fetchQuestions } from './lib/api';
+import type { Filters, Question } from './lib/types';
 
 type View = 'library' | 'admin';
 
@@ -169,7 +168,10 @@ function AppInner() {
                   filters={filters}
                   onFiltersChange={setFilters}
                   selectedId={selected?.id ?? null}
-                  onSelect={selectQuestion}
+                  onSelect={(id) => {
+                    const q = questions.find(question => question.id === id);
+                    if (q) selectQuestion(q);
+                  }}
                   onSelectGroup={selectQuestionGroup}
                 />
               )}
@@ -219,23 +221,21 @@ function AppInner() {
           </>
         )}
         {view === 'admin' && (
-          <ErrorBoundary>
-            <div className="flex-1 overflow-hidden">
-              <AdminGuard
-                onAuthenticated={loadAdmin}
-                onLogout={() => { setAdminQuestions([]); setEditing(null); }}
-              >
-                <AdminPanel
-                  questions={adminQuestions}
-                  loading={adminLoading}
-                  editing={editing}
-                  onQuestionsChanged={refreshQuestions}
-                  onStartEdit={startEdit}
-                  onCancelEdit={() => setEditing(null)}
-                />
-              </AdminGuard>
-            </div>
-          </ErrorBoundary>
+          <div className="flex-1 overflow-hidden">
+            <AdminGuard
+              onAuthenticated={loadAdmin}
+              onLogout={() => { setAdminQuestions([]); setEditing(null); }}
+            >
+              <AdminPanel
+                questions={adminQuestions}
+                loading={adminLoading}
+                editing={editing}
+                onQuestionsChanged={refreshQuestions}
+                onStartEdit={startEdit}
+                onCancelEdit={() => setEditing(null)}
+              />
+            </AdminGuard>
+          </div>
         )}
       </div>
     </div>

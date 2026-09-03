@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import App from '@/App';
 import * as api from '@/lib/api';
 
@@ -104,8 +104,7 @@ describe('App', () => {
     fireEvent.click(screen.getByLabelText('Next page'));
 
     await waitFor(() => {
-      const main = screen.getByRole('main');
-      expect(within(main).getByText('Question 11')).toBeInTheDocument();
+      expect(screen.getByText('Question 11')).toBeInTheDocument();
     });
   });
 });

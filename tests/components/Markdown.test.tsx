@@ -35,11 +35,6 @@ describe('Markdown', () => {
 
   it('handles malformed or unclosed code blocks', () => {
     render(<Markdown content="```javascript\nlet a = 1;" />);
-    // The code block content is split into separate spans due to syntax highlighting.
-    // Use a custom matcher to find the text content even if it's split.
-    const element = screen.getByText((content, element) => {
-      return element?.textContent?.includes('let a = 1;') ?? false;
-    });
-    expect(element).toBeInTheDocument();
+    expect(screen.getByText(/let a = 1;/)).toBeInTheDocument();
   });
 });

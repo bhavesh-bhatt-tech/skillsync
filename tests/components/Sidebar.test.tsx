@@ -88,7 +88,7 @@ describe('Sidebar', () => {
     );
 
     fireEvent.click(screen.getByText('What are virtual threads?'));
-    expect(onSelect).toHaveBeenCalledWith(sampleQuestions[0]);
+    expect(onSelect).toHaveBeenCalledWith(sampleQuestions[0].id);
   });
 
   it('toggles skill filter when skill pill is clicked', () => {
@@ -123,7 +123,7 @@ describe('Sidebar', () => {
       />
     );
 
-    const clearButton = screen.getByText('Clear');
+    const clearButton = screen.getByText('Clear All');
     fireEvent.click(clearButton);
     expect(onFiltersChange).toHaveBeenCalledWith({ search: '', role: '', skills: [], minExperience: 0 });
   });

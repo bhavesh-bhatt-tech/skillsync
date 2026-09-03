@@ -1,71 +1,97 @@
-import type { Question as AppQuestion, QuestionInput } from './types';
-import { ADMIN_KEY_STORAGE } from './adminAuth';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const ADMIN_KEY_STORAGE = 'admin_session';
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // ms
 
-type ApiQuestion = {
+// FIX 1: Add timeout and retry logic
+async function apiFetch(url: string, init: RequestInit = {}, admin = false) {
+  const sessionKey = sessionStorage.getItem(ADMIN_KEY_STORAGE) ?? '';
+  const headers = new Headers(init.headers);
+
+  if (admin && sessionKey) {
+    headers.set('x-admin-key', sessionKey);
+  }
+
+  let lastError: Error | null = null;
+  
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
+      const response = await fetch(url, {
+        ...init,
+        headers,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      
+      // Don't retry on abort or auth errors
+      if (lastError.name === 'AbortError' || lastError.message?.includes('401')) {
+        throw lastError;
+      }
+
+      if (attempt < MAX_RETRIES) {
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * attempt));
+        continue;
+      }
+    }
+  }
+
+  throw lastError || new Error('Failed to fetch after retries');
+}
+
+// FIX 2: Add type-safe error extraction
+function extractErrorMessage(data: unknown): string {
+  if (typeof data === 'object' && data !== null) {
+    const obj = data as Record<string, unknown>;
+    if (typeof obj.error === 'string') return obj.error;
+    if (typeof obj.message === 'string') return obj.message;
+  }
+  return 'Unknown error';
+}
+
+export interface Question {
   id: string;
   topic: string;
   subtopic: string;
   question: string;
-  answer?: string | null;
-  answer_markdown?: string | null;
-  answerMarkdown?: string | null;
-  type: AppQuestion['type'];
+  answer: string;
+  type: 'CONCEPTUAL' | 'PRACTICAL' | 'SYSTEM_DESIGN';
   starterCode?: string | null;
   skills: string[];
   roles: string[];
   minExperience: number;
   createdAt: string;
+  updatedAt: string;
+}
+
+type AppQuestion = Omit<Question, 'createdAt' | 'updatedAt'> & {
+  createdAt?: string;
+  updatedAt?: string;
 };
 
-function toQuestion(question: ApiQuestion): AppQuestion {
-  const answer = question.answer?.trim()
-    ? question.answer
-    : question.answer_markdown ?? question.answerMarkdown ?? '';
+type ApiQuestion = Question;
 
+function toQuestion(q: ApiQuestion): AppQuestion {
   return {
-    id: question.id,
-    topic: question.topic,
-    subtopic: question.subtopic,
-    question: question.question,
-    answer,
-    type: question.type,
-    starter_code: question.starterCode ?? null,
-    skills: question.skills ?? [],
-    roles: question.roles ?? [],
-    min_experience: question.minExperience ?? 0,
-    created_at: question.createdAt,
+    id: q.id,
+    topic: q.topic,
+    subtopic: q.subtopic,
+    question: q.question,
+    answer: q.answer,
+    type: q.type,
+    starterCode: q.starterCode,
+    skills: q.skills,
+    roles: q.roles,
+    minExperience: q.minExperience,
   };
 }
 
-function toApiPayload(question: Partial<QuestionInput>) {
-  return {
-    topic: question.topic,
-    subtopic: question.subtopic,
-    question: question.question,
-    answer: question.answer,
-    type: question.type,
-    starterCode: question.starter_code,
-    skills: question.skills,
-    roles: question.roles,
-    minExperience: question.min_experience,
-  };
-}
-
-// Dynamically read API base URL targeting your Express server
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-
-async function apiFetch(url: string, init: RequestInit = {}, admin = false) {
-  const headers = new Headers(init.headers);
-  if (admin) {
-    const adminKey = sessionStorage.getItem(ADMIN_KEY_STORAGE);
-    if (adminKey) headers.set('x-admin-key', adminKey);
-  }
-  return fetch(url, { ...init, headers });
-}
-
-/**
- * Fetch all questions with optional search and filter params
- */
 export async function fetchQuestions(filters?: {
   search?: string;
   role?: string;
@@ -74,9 +100,9 @@ export async function fetchQuestions(filters?: {
 }): Promise<AppQuestion[]> {
   const queryParams = new URLSearchParams();
   
-  if (filters?.search) queryParams.append('search', filters.search);
-  if (filters?.role) queryParams.append('role', filters.role);
-  if (filters?.skill) queryParams.append('skill', filters.skill);
+  if (filters?.search?.trim()) queryParams.append('search', filters.search.trim());
+  if (filters?.role?.trim()) queryParams.append('role', filters.role.trim());
+  if (filters?.skill?.trim()) queryParams.append('skill', filters.skill.trim());
   if (filters?.minExperience !== undefined && filters.minExperience > 0) {
     queryParams.append('experience', filters.minExperience.toString());
   }
@@ -84,98 +110,112 @@ export async function fetchQuestions(filters?: {
   const query = queryParams.toString();
   const url = query ? `${API_BASE_URL}/questions?${query}` : `${API_BASE_URL}/questions`;
   
-  const response = await apiFetch(url);
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || errorData.message || `Failed to fetch questions: ${response.statusText}`);
+  try {
+    const response = await apiFetch(url);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(extractErrorMessage(errorData));
+    }
+    return (await response.json() as ApiQuestion[]).map(toQuestion);
+  } catch (error) {
+    throw error instanceof Error ? error : new Error('Failed to fetch questions');
   }
-  const data = await response.json() as ApiQuestion[];
-  return data.map(toQuestion);
 }
 
 export async function fetchAdminQuestions(): Promise<AppQuestion[]> {
-  const response = await apiFetch(`${API_BASE_URL}/questions`, {}, true);
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || errorData.message || `Failed to fetch questions: ${response.statusText}`);
+  try {
+    const response = await apiFetch(`${API_BASE_URL}/questions`, {}, true);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(extractErrorMessage(errorData));
+    }
+    return (await response.json() as ApiQuestion[]).map(toQuestion);
+  } catch (error) {
+    throw error instanceof Error ? error : new Error('Failed to fetch admin questions');
   }
-  return (await response.json() as ApiQuestion[]).map(toQuestion);
 }
 
-export const fetchAllQuestions = fetchAdminQuestions;
+export async function createQuestion(question: Omit<AppQuestion, 'id'>): Promise<AppQuestion> {
+  try {
+    const response = await apiFetch(`${API_BASE_URL}/questions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(question),
+    }, true);
 
-/**
- * Create a single question via Admin Form
- */
-export async function createQuestion(questionData: QuestionInput): Promise<AppQuestion> {
-  const response = await apiFetch(`${API_BASE_URL}/questions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(toApiPayload(questionData)),
-  }, true);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(extractErrorMessage(errorData));
+    }
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || errorData.message || `Failed to create question: ${response.statusText}`);
+    return toQuestion(await response.json() as ApiQuestion);
+  } catch (error) {
+    throw error instanceof Error ? error : new Error('Failed to create question');
   }
-  
-  return toQuestion(await response.json() as ApiQuestion);
 }
 
-/**
- * Update an existing question by ID
- */
-export async function updateQuestion(id: string, questionData: Partial<QuestionInput>): Promise<AppQuestion> {
-  const response = await apiFetch(`${API_BASE_URL}/questions/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(toApiPayload(questionData)),
-  }, true);
+export async function updateQuestion(id: string, question: Partial<AppQuestion>): Promise<AppQuestion> {
+  try {
+    const response = await apiFetch(`${API_BASE_URL}/questions/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(question),
+    }, true);
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || errorData.message || `Failed to update question: ${response.statusText}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(extractErrorMessage(errorData));
+    }
+
+    return toQuestion(await response.json() as ApiQuestion);
+  } catch (error) {
+    throw error instanceof Error ? error : new Error('Failed to update question');
   }
-
-  return toQuestion(await response.json() as ApiQuestion);
 }
 
-/**
- * Delete a question by ID
- */
-export async function deleteQuestion(id: string): Promise<{ success: boolean }> {
-  const response = await apiFetch(`${API_BASE_URL}/questions/${id}`, {
-    method: 'DELETE',
-  }, true);
+export async function deleteQuestion(id: string): Promise<void> {
+  try {
+    const response = await apiFetch(`${API_BASE_URL}/questions/${id}`, {
+      method: 'DELETE',
+    }, true);
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || errorData.message || `Failed to delete question: ${response.statusText}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(extractErrorMessage(errorData));
+    }
+  } catch (error) {
+    throw error instanceof Error ? error : new Error('Failed to delete question');
   }
-
-  return await response.json();
 }
 
-/**
- * Batch insert pre-parsed JSON questions array
- */
-export async function batchInsertQuestions(questions: any[]): Promise<{ count: number; inserted: number; updated: number }> {
-  const response = await apiFetch(`${API_BASE_URL}/questions/batch`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(questions.map((question) => toApiPayload(question))),
-  }, true);
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || errorData.message || `Failed to batch insert questions: ${response.statusText}`);
+export async function fetchAllQuestions(): Promise<AppQuestion[]> {
+  try {
+    const response = await apiFetch(`${API_BASE_URL}/questions`, {}, true);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(extractErrorMessage(errorData));
+    }
+    return (await response.json() as ApiQuestion[]).map(toQuestion);
+  } catch (error) {
+    throw error instanceof Error ? error : new Error('Failed to fetch all questions');
   }
+}
 
-  return await response.json();
+export async function batchInsertQuestions(questions: Omit<AppQuestion, 'id'>[]): Promise<AppQuestion[]> {
+  try {
+    const response = await apiFetch(`${API_BASE_URL}/questions/batch`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(questions),
+    }, true);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(extractErrorMessage(errorData));
+    }
+
+    return (await response.json() as ApiQuestion[]).map(toQuestion);
+  } catch (error) {
+    throw error instanceof Error ? error : new Error('Failed to batch insert questions');
+  }
 }

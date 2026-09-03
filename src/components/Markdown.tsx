@@ -103,42 +103,50 @@ function readIdentifierToken(code: string, start: number) {
   return code.slice(start, end);
 }
 
-function getNextCodeToken(code: string, index: number) {
-  const current = code[index];
-
-  if (current === '/' && code[index + 1] === '/') {
-    return readSingleLineComment(code, index);
-  }
-
-  if (current === '/' && code[index + 1] === '*') {
-    return readBlockComment(code, index);
-  }
-
-  if (current === '"' || current === "'" || current === '`') {
-    return readQuotedToken(code, index);
-  }
-
-  if (/\d/.test(current)) {
-    return readNumberToken(code, index);
-  }
-
-  if (/[A-Za-z_$]/.test(current)) {
-    return readIdentifierToken(code, index);
-  }
-
-  return current;
-}
-
 function highlightCode(code: string) {
   const parts: React.ReactNode[] = [];
   let index = 0;
 
   while (index < code.length) {
-    const token = getNextCodeToken(code, index);
-    parts.push(
-      <span key={`${index}-${token}`} className={getTokenClass(token)}>{token}</span>,
-    );
-    index += token.length;
+    const current = code[index];
+
+    if (current === '/' && code[index + 1] === '/') {
+      const token = readSingleLineComment(code, index);
+      parts.push(<span key={`${index}-${token}`} className={getTokenClass(token)}>{token}</span>);
+      index += token.length;
+      continue;
+    }
+
+    if (current === '/' && code[index + 1] === '*') {
+      const token = readBlockComment(code, index);
+      parts.push(<span key={`${index}-${token}`} className={getTokenClass(token)}>{token}</span>);
+      index += token.length;
+      continue;
+    }
+
+    if (current === '"' || current === "'" || current === '`') {
+      const token = readQuotedToken(code, index);
+      parts.push(<span key={`${index}-${token}`} className={getTokenClass(token)}>{token}</span>);
+      index += token.length;
+      continue;
+    }
+
+    if (/\d/.test(current)) {
+      const token = readNumberToken(code, index);
+      parts.push(<span key={`${index}-${token}`} className={getTokenClass(token)}>{token}</span>);
+      index += token.length;
+      continue;
+    }
+
+    if (/[A-Za-z_$]/.test(current)) {
+      const token = readIdentifierToken(code, index);
+      parts.push(<span key={`${index}-${token}`} className={getTokenClass(token)}>{token}</span>);
+      index += token.length;
+      continue;
+    }
+
+    parts.push(code[index]);
+    index += 1;
   }
 
   return parts;

@@ -38,6 +38,20 @@ function validateQuestionInput(data: any): { valid: boolean; error?: string } {
   return { valid: true };
 }
 
+function normalizeQuestionInput(data: any) {
+  return {
+    topic: data.topic.trim(),
+    subtopic: data.subtopic.trim(),
+    question: data.question.trim(),
+    answer: data.answer.trim(),
+    type: String(data.type || 'CONCEPTUAL').toUpperCase(),
+    starterCode: data.starterCode ?? null,
+    skills: Array.isArray(data.skills) ? data.skills : [],
+    roles: Array.isArray(data.roles) ? data.roles : [],
+    minExperience: Math.max(0, Number(data.minExperience) || 0),
+  };
+}
+
 app.get('/api/questions', async (req, res) => {
   try {
     const { search, role, skill, experience } = req.query;
@@ -79,19 +93,8 @@ app.post('/api/questions', async (req, res) => {
       return resError(res, 400, validation.error!);
     }
 
-    const { topic, subtopic, question, answer, type, starterCode, skills, roles, minExperience } = req.body;
     const q = await prisma.question.create({
-      data: {
-        topic: topic.trim(),
-        subtopic: subtopic.trim(),
-        question: question.trim(),
-        answer: answer.trim(),
-        type: String(type || 'CONCEPTUAL').toUpperCase(),
-        starterCode: starterCode ?? null,
-        skills: Array.isArray(skills) ? skills : [],
-        roles: Array.isArray(roles) ? roles : [],
-        minExperience: Math.max(0, Number(minExperience) || 0),
-      },
+      data: normalizeQuestionInput(req.body),
     });
     logger.info('Question created', { id: q.id });
     res.status(201).json(q);
@@ -111,21 +114,9 @@ app.put('/api/questions/:id', async (req, res) => {
       return resError(res, 400, validation.error!);
     }
 
-    const { topic, subtopic, question, answer, type, starterCode, skills, roles, minExperience } = req.body;
-
     const updatedQuestion = await prisma.question.update({
       where: { id },
-      data: {
-        topic: topic.trim(),
-        subtopic: subtopic.trim(),
-        question: question.trim(),
-        answer: answer.trim(),
-        type: String(type || 'CONCEPTUAL').toUpperCase(),
-        starterCode: starterCode ?? null,
-        skills: Array.isArray(skills) ? skills : [],
-        roles: Array.isArray(roles) ? roles : [],
-        minExperience: Math.max(0, Number(minExperience) || 0),
-      },
+      data: normalizeQuestionInput(req.body),
     });
 
     logger.info('Question updated', { id: updatedQuestion.id });
@@ -173,17 +164,7 @@ app.post('/api/questions/batch', async (req, res) => {
           continue;
         }
 
-        const normalized = {
-          topic: item.topic.trim(),
-          subtopic: item.subtopic.trim(),
-          question: item.question.trim(),
-          answer: item.answer.trim(),
-          type: String(item.type || 'CONCEPTUAL').toUpperCase(),
-          starterCode: item.starterCode ?? null,
-          skills: Array.isArray(item.skills) ? item.skills : [],
-          roles: Array.isArray(item.roles) ? item.roles : [],
-          minExperience: Math.max(0, Number(item.minExperience) || 0),
-        };
+        const normalized = normalizeQuestionInput(item);
 
         const existing = await tx.question.findFirst({
           where: {

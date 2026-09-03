@@ -1,4 +1,4 @@
-import React, { useContext, useState, type ReactNode, useCallback } from 'react';
+import React, { useContext, useState, type ReactNode, useCallback, useEffect, useRef } from 'react';
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'info';
@@ -26,16 +26,23 @@ interface ToastProviderProps {
   children: ReactNode;
 }
 
-export function ToastProvider({ children }: ToastProviderProps) {
+export function ToastProvider({ children }: Readonly<ToastProviderProps>) {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const timeoutIdsRef = useRef<number[]>([]);
+
+  useEffect(() => () => {
+    timeoutIdsRef.current.forEach((id) => clearTimeout(id));
+    timeoutIdsRef.current = [];
+  }, []);
 
   const notify = useCallback((type: ToastType, message: string) => {
     const id = generateSecureId();
     const newToast: Toast = { id, type, message };
     setToasts((prev) => [...prev, newToast]);
-    setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 3000);
+    timeoutIdsRef.current.push(timeoutId);
   }, []);
 
   const value: ToastContextType = { notify };

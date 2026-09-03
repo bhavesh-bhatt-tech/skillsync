@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { fetchQuestions, fetchAdminQuestions, createQuestion, updateQuestion, deleteQuestion, batchInsertQuestions } from '@/lib/api';
+import { fetchQuestions, fetchAdminQuestions, createQuestion, updateQuestion, deleteQuestion, batchInsertQuestions, fetchAllQuestions } from '@/lib/api';
 
 describe('api client', () => {
   beforeEach(() => {
@@ -62,6 +62,62 @@ describe('api client', () => {
 
     const result = await fetchAdminQuestions();
     expect(result).toEqual([]);
+  });
+
+  it('sends admin key header when session key exists', async () => {
+    sessionStorage.setItem('admin_session', 'secret-key');
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    );
+
+    await fetchAdminQuestions();
+
+    const callInit = vi.mocked(fetch).mock.calls[0][1] as RequestInit;
+    const headers = new Headers(callInit.headers);
+    expect(headers.get('x-admin-key')).toBe('secret-key');
+  });
+
+  it('throws message from response.message when response is not ok', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ message: 'Invalid payload' }), { status: 400, headers: { 'Content-Type': 'application/json' } })
+    );
+
+    await expect(createQuestion({
+      topic: 'Node',
+      subtopic: 'Express',
+      question: 'Q',
+      answer: 'A',
+      type: 'CONCEPTUAL',
+      starterCode: null,
+      skills: [],
+      roles: [],
+      minExperience: 0,
+    })).rejects.toThrow('Invalid payload');
+  });
+
+  it('returns unknown error when non-json error body is returned', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response('plain text error', { status: 500 }));
+    await expect(fetchAllQuestions()).rejects.toThrow('Unknown error');
+  });
+
+  it('does not retry auth-related failures', async () => {
+    vi.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('401 Unauthorized'));
+
+    await expect(fetchQuestions()).rejects.toThrow('401 Unauthorized');
+    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries transient failures and eventually succeeds', async () => {
+    vi.useFakeTimers();
+    vi.spyOn(global, 'fetch')
+      .mockRejectedValueOnce(new Error('temporary network issue'))
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+
+    const promise = fetchQuestions();
+    await vi.advanceTimersByTimeAsync(1200);
+    await expect(promise).resolves.toEqual([]);
+    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
   });
 
   it('creates a question successfully', async () => {

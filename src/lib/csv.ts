@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import {
-  CSV_HEADERS,
+  QUESTION_HEADERS,
   REQUIRED_CSV_HEADERS,
   type Question,
   type QuestionInput,
@@ -27,7 +27,7 @@ export function questionsToCsv(questions: Question[]): string {
     roles: q.roles.join('|'),
     minExperience: q.min_experience,
   }));
-  return Papa.unparse({ fields: [...CSV_HEADERS], data: rows });
+  return Papa.unparse({ fields: [...QUESTION_HEADERS], data: rows });
 }
 
 export function downloadCsv(filename: string, csv: string) {
@@ -38,7 +38,7 @@ export function downloadCsv(filename: string, csv: string) {
   link.download = filename;
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+  link.remove();
   URL.revokeObjectURL(url);
 }
 

@@ -11,6 +11,8 @@ vi.mock('@/lib/api', () => ({
 describe('App', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    window.localStorage.clear();
+    window.sessionStorage.clear();
     vi.mocked(api.fetchQuestions).mockResolvedValue([
       {
         id: '1',
@@ -34,6 +36,41 @@ describe('App', () => {
     await waitFor(() => {
       expect(screen.getByText('SkillSync')).toBeInTheDocument();
       expect(screen.getAllByText('Explain Redis caching strategies').length).toBeGreaterThan(0);
+    });
+  });
+
+  it('shows error toast when initial question load fails', async () => {
+    vi.mocked(api.fetchQuestions).mockRejectedValueOnce(new Error('network down'));
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load questions: network down')).toBeInTheDocument();
+      expect(screen.getByText('Select a question to begin')).toBeInTheDocument();
+    });
+  });
+
+  it('applies persisted panel width constraints from localStorage', async () => {
+    window.localStorage.setItem('skillsync.library.panelWidth', '9999');
+    render(<App />);
+
+    await waitFor(() => {
+      const resizeButton = screen.getByRole('button', { name: 'Resize Library panel' });
+      const panel = resizeButton.parentElement;
+      expect(panel).toHaveStyle({ width: '560px' });
+    });
+  });
+
+  it('updates panel width with keyboard resize shortcuts', async () => {
+    render(<App />);
+
+    const resizeButton = await screen.findByRole('button', { name: 'Resize Library panel' });
+    fireEvent.keyDown(resizeButton, { key: 'ArrowRight' });
+    fireEvent.keyDown(resizeButton, { key: 'Home' });
+    fireEvent.keyDown(resizeButton, { key: 'End' });
+
+    await waitFor(() => {
+      expect(window.localStorage.getItem('skillsync.library.panelWidth')).toBe('560');
     });
   });
 

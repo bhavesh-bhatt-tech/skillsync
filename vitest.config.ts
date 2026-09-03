@@ -19,7 +19,7 @@ export default defineConfig({
       clean: true,
       cleanOnRerun: true,
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/main.tsx', 'src/vite-env.d.ts', 'src/**/*.stories.tsx'],
+      exclude: ['src/main.tsx', 'src/vite-env.d.ts', 'src/**/*.stories.tsx', 'src/**/*.test.ts', 'src/**/*.test.tsx', 'src/**/*.spec.ts', 'src/**/*.spec.tsx'],
       thresholds: {
         lines: 40,
         functions: 40,

@@ -63,10 +63,14 @@ describe('Markdown', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
 
     expect(writeText).toHaveBeenCalledWith('const a = 1;\n');
+
+    vi.advanceTimersByTime(1);
     expect(screen.getByText('Copied')).toBeInTheDocument();
 
     vi.advanceTimersByTime(1500);
     expect(screen.getByText('Copy')).toBeInTheDocument();
+
+    vi.useRealTimers();
   });
 
   it('normalizes inline markdown table into rows', () => {

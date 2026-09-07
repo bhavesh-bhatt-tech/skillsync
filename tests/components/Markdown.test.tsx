@@ -52,7 +52,6 @@ describe('Markdown', () => {
   });
 
   it('copies code from code block', async () => {
-    vi.useFakeTimers();
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(window.navigator, 'clipboard', {
       configurable: true,
@@ -63,13 +62,11 @@ describe('Markdown', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
 
     expect(writeText).toHaveBeenCalledWith('const a = 1;\n');
+    expect(await screen.findByText('Copied')).toBeInTheDocument();
 
-    vi.advanceTimersByTime(1);
-    expect(screen.getByText('Copied')).toBeInTheDocument();
-
+    vi.useFakeTimers();
     vi.advanceTimersByTime(1500);
     expect(screen.getByText('Copy')).toBeInTheDocument();
-
     vi.useRealTimers();
   });
 

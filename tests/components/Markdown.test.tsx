@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { fireEvent, render, screen, act } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Markdown } from '@/components/Markdown';
 import '@testing-library/jest-dom/vitest';
 
@@ -60,16 +60,12 @@ describe('Markdown', () => {
     });
 
     render(<Markdown content={'```js\nconst a = 1;\n```'} />);
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
 
     expect(writeText).toHaveBeenCalledWith('const a = 1;\n');
     expect(screen.getByText('Copied')).toBeInTheDocument();
 
-    act(() => {
-      vi.advanceTimersByTime(1500);
-    });
+    vi.advanceTimersByTime(1500);
     expect(screen.getByText('Copy')).toBeInTheDocument();
   });
 

@@ -22,7 +22,7 @@ export function Sidebar({
   selectedId,
   onSelect,
   onSelectGroup,
-}: SidebarProps) {
+}: Readonly<SidebarProps>) {
   const [showFilters, setShowFilters] = useState(true);
   const [showSkills, setShowSkills] = useState(() => {
     const storedValue = window.localStorage.getItem('skillsync.library.showSkills');
@@ -37,12 +37,12 @@ export function Sidebar({
 
   // FIX 1: Proper memoization with all dependencies
   const allRoles = useMemo(
-    () => Array.from(new Set(questions.flatMap((q) => q.roles))).sort(),
+    () => Array.from(new Set(questions.flatMap((q) => q.roles))).sort((a, b) => a.localeCompare(b)),
     [questions],
   );
 
   const allSkills = useMemo(
-    () => Array.from(new Set(questions.flatMap((q) => q.skills))).sort(),
+    () => Array.from(new Set(questions.flatMap((q) => q.skills))).sort((a, b) => a.localeCompare(b)),
     [questions],
   );
 
@@ -114,7 +114,7 @@ export function Sidebar({
 
             <div className="mt-3">
               <div className="mb-2 flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700">Skills</label>
+                <span className="text-sm font-medium text-slate-700">Skills</span>
                 <button
                   type="button"
                   onClick={() => setShowSkills((value) => !value)}

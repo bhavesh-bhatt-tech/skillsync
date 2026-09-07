@@ -1,4 +1,4 @@
-import React, { useContext, useState, type ReactNode, useCallback, useEffect, useRef } from 'react';
+import React, { useContext, useState, type ReactNode, useCallback, useEffect, useRef, useMemo } from 'react';
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'info';
@@ -45,7 +45,7 @@ export function ToastProvider({ children }: Readonly<ToastProviderProps>) {
     timeoutIdsRef.current.push(timeoutId);
   }, []);
 
-  const value: ToastContextType = { notify };
+  const value: ToastContextType = useMemo(() => ({ notify }), [notify]);
 
   const styles: Record<ToastType, string> = {
     success: 'border-emerald-200 bg-emerald-50 text-emerald-800',

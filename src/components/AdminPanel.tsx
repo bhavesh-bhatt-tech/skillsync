@@ -3,7 +3,7 @@ import {
   Plus, Save, X, UploadCloud, FileDown, Trash2, Pencil, Loader2, FileSpreadsheet, ChevronLeft, ChevronRight,
   Bold, Italic, Heading2, Code2,
 } from 'lucide-react';
-import type { Question, QuestionInput, QuestionType } from '@/lib/types';
+import type { Question, QuestionInput } from '@/lib/types';
 import {
   batchInsertQuestions, createQuestion, deleteQuestion, fetchAllQuestions, updateQuestion,
 } from '@/lib/api';
@@ -386,7 +386,7 @@ function QuestionForm(props: Readonly<{ editing: Question | null; onSaved: () =>
             id={`${id}-type`}
             className={inputCls}
             value={form.type}
-            onChange={(e) => set('type', e.target.value as QuestionType)}
+            onChange={(e) => set('type', e.target.value)}
             placeholder="e.g. CONCEPTUAL, CODING, SYSTEM-DESIGN"
           />
         </div>

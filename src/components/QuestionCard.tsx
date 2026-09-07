@@ -60,20 +60,7 @@ function CodingCard({ question }: Readonly<{ question: Question }>) {
   const copy = async () => {
     try {
       const textToCopy = question.answer ?? '';
-
-      if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-        await navigator.clipboard.writeText(textToCopy);
-      } else if (typeof document !== 'undefined') {
-        const textarea = document.createElement('textarea');
-        textarea.value = textToCopy;
-        textarea.setAttribute('readonly', '');
-        textarea.style.position = 'absolute';
-        textarea.style.left = '-9999px';
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        textarea.remove();
-      }
+      await navigator.clipboard.writeText(textToCopy);
 
       setCopied(true);
       if (timeoutRef.current !== null) {

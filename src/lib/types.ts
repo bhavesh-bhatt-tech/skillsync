@@ -1,12 +1,10 @@
-export type QuestionType = string;
-
 export interface Question {
   id: string;
   topic: string;
   subtopic: string;
   question: string;
   answer: string;
-  type: QuestionType;
+  type: string;
   starter_code: string | null;
   skills: string[];
   roles: string[];
@@ -19,7 +17,7 @@ export interface QuestionInput {
   subtopic: string;
   question: string;
   answer: string;
-  type: QuestionType;
+  type: string;
   starter_code?: string | null;
   skills: string[];
   roles: string[];

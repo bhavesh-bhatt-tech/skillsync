@@ -4,7 +4,6 @@ import {
   REQUIRED_CSV_HEADERS,
   type Question,
   type QuestionInput,
-  type QuestionType,
 } from './types';
 
 export function parseList(raw: string | undefined | null): string[] {
@@ -65,7 +64,7 @@ function normalizeRow(raw: ParsedCsvRow) {
 
   if (typeIndex < 0) return null;
 
-  const type = shiftedFields[typeIndex].trim().toUpperCase() as QuestionType;
+  const type = shiftedFields[typeIndex].trim().toUpperCase();
   const optionalFields = shiftedFields.slice(typeIndex + 1);
   return {
     answer: [raw.answer, ...shiftedFields.slice(0, typeIndex)].filter(Boolean).join(',').trim(),

@@ -26,15 +26,16 @@ export function AdminGuard({ children, onAuthenticated, onLogout }: Readonly<{
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    if (!getConfiguredAdminKey()) {
+    const configuredKey = getConfiguredAdminKey();
+    if (!configuredKey) {
       setError('Admin access is not configured on this deployment.');
       return;
     }
-    if (key.trim() !== getConfiguredAdminKey()) {
+    if (key.trim() !== configuredKey) {
       setError('That admin key is not valid.');
       return;
     }
-    sessionStorage.setItem(ADMIN_KEY_STORAGE, key.trim());
+    sessionStorage.setItem(ADMIN_KEY_STORAGE, configuredKey);
     setKey('');
     setError('');
     setAuthenticated(true);

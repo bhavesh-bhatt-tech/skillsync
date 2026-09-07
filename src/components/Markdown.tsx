@@ -5,9 +5,17 @@ import { useState } from 'react';
 type CodeBlockProps = Readonly<{ className?: string; children?: React.ReactNode }>;
 type MarkdownProps = Readonly<{ content: string }>;
 
+function extractText(node: React.ReactNode): string {
+  if (node === null || node === undefined) return '';
+  if (typeof node === 'string') return node;
+  if (typeof node === 'number' || typeof node === 'boolean') return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join('');
+  return '';
+}
+
 function CodeBlock({ className, children }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
-  const code = String(children ?? '');
+  const code = extractText(children);
   const lang = className?.replace('language-', '') || 'text';
 
   const copy = async () => {

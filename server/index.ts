@@ -57,14 +57,14 @@ app.get('/api/questions', async (req, res) => {
     const { search, role, skill, experience } = req.query;
     const where: any = {};
     
-    if (search) {
+    if (typeof search === 'string' && search.trim()) {
       where.OR = [
-        { question: { contains: String(search), mode: 'insensitive' } },
-        { answer: { contains: String(search), mode: 'insensitive' } },
+        { question: { contains: search, mode: 'insensitive' } },
+        { answer: { contains: search, mode: 'insensitive' } },
       ];
     }
-    if (role) where.roles = { has: String(role) };
-    if (skill) where.skills = { has: String(skill) };
+    if (typeof role === 'string' && role.trim()) where.roles = { has: role };
+    if (typeof skill === 'string' && skill.trim()) where.skills = { has: skill };
     
     // FIX: Validate and convert experience safely instead of string concatenation
     if (experience) {

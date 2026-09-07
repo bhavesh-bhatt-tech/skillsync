@@ -9,7 +9,7 @@
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql&logoColor=white" />
   <img alt="Vitest" src="https://img.shields.io/badge/Vitest-Testing-6E9F18?logo=vitest&logoColor=white" />
   <img alt="Coverage" src="https://img.shields.io/badge/Code%20Coverage-Available-8A2BE2" />
-  [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=bhavesh-bhatt-tech_skillsync&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
+  [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=bhavesh-bhatt-tech_skillsync&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)]
 </div>
 
 ## Contributions

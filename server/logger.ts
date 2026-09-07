@@ -55,10 +55,11 @@ export const logger = {
     write('debug', message, context);
   },
   error(message: string, error?: unknown, context?: LogContext) {
-    write('error', message, {
-      ...(context ?? {}),
-      ...(error !== undefined ? { error: serializeError(error) } : {}),
-    });
+    const errorContext: LogContext = { ...context };
+    if (error !== undefined) {
+      errorContext.error = serializeError(error);
+    }
+    write('error', message, errorContext);
   },
   file: logFile,
 };

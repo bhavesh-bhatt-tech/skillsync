@@ -1,0 +1,957 @@
+{
+  "total": 17,
+  "p": 1,
+  "ps": 100,
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 100,
+    "total": 17
+  },
+  "effortTotal": 120,
+  "debtTotal": 120,
+  "issues": [
+    {
+      "key": "AaBo8WPgltMGf5VyD9xg",
+      "rule": "typescript:S8980",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:tests/components/Markdown.test.tsx",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 63,
+      "hash": "1a923a1299f499cb18a0c6fce8b02ece",
+      "textRange": {
+        "startLine": 63,
+        "endLine": 63,
+        "startOffset": 10,
+        "endOffset": 13
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this redundant `act()` call; the wrapped call already flushes its own updates.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "react",
+        "tests"
+      ],
+      "creationDate": "2026-09-03T20:21:10+0000",
+      "updateDate": "2026-09-03T20:22:29+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "244e3e42-2d82-4c7d-8587-4c2403b3c163",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBnPUkS8p6v75_Bo2HN",
+      "rule": "typescript:S1874",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:src/components/QuestionCard.tsx",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 74,
+      "hash": "5d55eadb767cc96302ecc1bb778b2622",
+      "textRange": {
+        "startLine": 74,
+        "endLine": 74,
+        "startOffset": 17,
+        "endOffset": 28
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "The signature '(commandId: string, showUI?: boolean | undefined, value?: string | undefined): boolean' of 'document.execCommand' is deprecated.",
+      "effort": "15min",
+      "debt": "15min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "cwe",
+        "obsolete",
+        "type-dependent"
+      ],
+      "creationDate": "2026-09-03T12:26:08+0000",
+      "updateDate": "2026-09-03T12:26:22+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "bebf3076-d3d0-420f-ba28-2692430e55e1",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBmUkY6mr3DRVHU9TmT",
+      "rule": "typescript:S6759",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:src/components/Sidebar.tsx",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 18,
+      "hash": "b5a608e63731db44e4946abed142fb76",
+      "textRange": {
+        "startLine": 18,
+        "endLine": 25,
+        "startOffset": 24,
+        "endOffset": 15
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Mark the props of the component as read-only.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "react",
+        "type-dependent"
+      ],
+      "creationDate": "2026-09-03T08:09:56+0000",
+      "updateDate": "2026-09-03T08:10:10+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "fefcbf18-c183-4535-ab59-8d664bace593",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBmUkY6mr3DRVHU9TmV",
+      "rule": "typescript:S6853",
+      "severity": "MAJOR",
+      "component": "bhavesh-bhatt-tech_skillsync:src/components/Sidebar.tsx",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 117,
+      "hash": "6bc913a4a71bd63ab1f1737d1bab65e6",
+      "textRange": {
+        "startLine": 117,
+        "endLine": 117,
+        "startOffset": 17,
+        "endOffset": 22
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "A form label must be associated with a control.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-09-03T08:09:56+0000",
+      "updateDate": "2026-09-03T08:10:10+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "fefcbf18-c183-4535-ab59-8d664bace593",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBmUka1mr3DRVHU9TmX",
+      "rule": "typescript:S6481",
+      "severity": "MAJOR",
+      "component": "bhavesh-bhatt-tech_skillsync:src/components/Toast.tsx",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 48,
+      "hash": "014ac26f6ac7eabe236f75b8bc936d40",
+      "textRange": {
+        "startLine": 48,
+        "endLine": 48,
+        "startOffset": 34,
+        "endOffset": 44
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "The 'value' object passed as the value prop to the Context provider changes every render. To fix this consider wrapping it in a useMemo hook.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "jsx",
+        "performance",
+        "react"
+      ],
+      "creationDate": "2026-09-03T08:09:56+0000",
+      "updateDate": "2026-09-03T08:10:10+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "0d181df1-7934-40be-9625-ee0de180ac82",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBmUkd5mr3DRVHU9TmZ",
+      "rule": "typescript:S6551",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:src/lib/xlsx.ts",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 29,
+      "hash": "5204ab402e26c2fc1acd1fe31626014b",
+      "textRange": {
+        "startLine": 29,
+        "endLine": 29,
+        "startOffset": 16,
+        "endOffset": 21
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "'value' will use Object's default stringification format ('[object Object]') when stringified.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "object",
+        "string",
+        "type-dependent"
+      ],
+      "creationDate": "2026-09-03T08:09:56+0000",
+      "updateDate": "2026-09-03T08:10:10+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "fefcbf18-c183-4535-ab59-8d664bace593",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBbwtu1Xl6pbvaNHI5O",
+      "rule": "typescript:S7785",
+      "severity": "MAJOR",
+      "component": "bhavesh-bhatt-tech_skillsync:prisma/seed.ts",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 58,
+      "hash": "6bd5ae67c4a1c9c64a8f8b207477a4d6",
+      "textRange": {
+        "startLine": 58,
+        "endLine": 58,
+        "startOffset": 3,
+        "endOffset": 10
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Prefer top-level await over using a promise chain.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "async",
+        "editable-source",
+        "es2022",
+        "esm-only",
+        "modernize",
+        "type-dependent"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-01T06:57:15+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "6e34c9df-5a89-4709-8c7d-d17ccbc3a027",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBn_O2D4K2eIZS7FtjP",
+      "rule": "typescript:S6551",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:server/index.ts",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 62,
+      "hash": "605429db9dac733d5e5043f377df4746",
+      "textRange": {
+        "startLine": 62,
+        "endLine": 62,
+        "startOffset": 39,
+        "endOffset": 45
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "'search' may use Object's default stringification format ('[object Object]') when stringified.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "object",
+        "string",
+        "type-dependent"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-03T15:55:33+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "aaabe261-456f-42e0-a9d0-ae8c257b50bf",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBn_O2D4K2eIZS7FtjQ",
+      "rule": "typescript:S6551",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:server/index.ts",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 63,
+      "hash": "7d1dcaaf20df338455cccc1a5739966d",
+      "textRange": {
+        "startLine": 63,
+        "endLine": 63,
+        "startOffset": 37,
+        "endOffset": 43
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "'search' may use Object's default stringification format ('[object Object]') when stringified.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "object",
+        "string",
+        "type-dependent"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-03T15:55:33+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "aaabe261-456f-42e0-a9d0-ae8c257b50bf",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBn_O2D4K2eIZS7FtjR",
+      "rule": "typescript:S6551",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:server/index.ts",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 66,
+      "hash": "c0797816a3b31432fb3e5bef014d8d24",
+      "textRange": {
+        "startLine": 66,
+        "endLine": 66,
+        "startOffset": 42,
+        "endOffset": 46
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "'role' may use Object's default stringification format ('[object Object]') when stringified.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "object",
+        "string",
+        "type-dependent"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-03T15:55:33+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "aaabe261-456f-42e0-a9d0-ae8c257b50bf",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBn_O2D4K2eIZS7FtjS",
+      "rule": "typescript:S6551",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:server/index.ts",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 67,
+      "hash": "d3418d4db848341ad37b1f3f066c28f3",
+      "textRange": {
+        "startLine": 67,
+        "endLine": 67,
+        "startOffset": 44,
+        "endOffset": 49
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "'skill' may use Object's default stringification format ('[object Object]') when stringified.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "object",
+        "string",
+        "type-dependent"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-03T15:55:33+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "aaabe261-456f-42e0-a9d0-ae8c257b50bf",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBbwtuOXl6pbvaNHI5A",
+      "rule": "typescript:S7744",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:server/logger.ts",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 59,
+      "hash": "c21d269f51121749d11093e701f2a1e0",
+      "textRange": {
+        "startLine": 59,
+        "endLine": 59,
+        "startOffset": 21,
+        "endOffset": 23
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "The empty object is useless.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "editable-source",
+        "spread-operator",
+        "unnecessary"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-01T06:57:15+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "6e34c9df-5a89-4709-8c7d-d17ccbc3a027",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBbwttkXl6pbvaNHI4s",
+      "rule": "tssecurity:S8475",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:src/components/AdminGuard.tsx",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 37,
+      "hash": "ba3f3806dd32eb2676cba635c8d485f4",
+      "textRange": {
+        "startLine": 37,
+        "endLine": 37,
+        "startOffset": 19,
+        "endOffset": 26
+      },
+      "flows": [
+        {
+          "locations": [
+            {
+              "component": "bhavesh-bhatt-tech_skillsync:src/components/AdminGuard.tsx",
+              "textRange": {
+                "startLine": 37,
+                "endLine": 37,
+                "startOffset": 19,
+                "endOffset": 26
+              },
+              "msg": "Sink: this invocation is not safe; a malicious value can be used as argument"
+            },
+            {
+              "component": "bhavesh-bhatt-tech_skillsync:src/components/AdminGuard.tsx",
+              "textRange": {
+                "startLine": 37,
+                "endLine": 37,
+                "startOffset": 46,
+                "endOffset": 49
+              },
+              "msg": "A malicious value was previously assigned to field ‘key’"
+            },
+            {
+              "component": "bhavesh-bhatt-tech_skillsync:src/components/AdminGuard.tsx",
+              "textRange": {
+                "startLine": 20,
+                "endLine": 20,
+                "startOffset": 9,
+                "endOffset": 12
+              },
+              "msg": "A malicious value can be assigned to field ‘key’"
+            },
+            {
+              "component": "bhavesh-bhatt-tech_skillsync:src/components/AdminGuard.tsx",
+              "textRange": {
+                "startLine": 20,
+                "endLine": 20,
+                "startOffset": 9,
+                "endOffset": 12
+              },
+              "msg": "A malicious value was previously assigned to field"
+            },
+            {
+              "component": "bhavesh-bhatt-tech_skillsync:src/components/AdminGuard.tsx",
+              "textRange": {
+                "startLine": 64,
+                "endLine": 64,
+                "startOffset": 55,
+                "endOffset": 60
+              },
+              "msg": "A malicious value was previously assigned to field ‘value’"
+            },
+            {
+              "component": "bhavesh-bhatt-tech_skillsync:src/main.tsx",
+              "textRange": {
+                "startLine": 6,
+                "endLine": 6,
+                "startOffset": 45,
+                "endOffset": 51
+              },
+              "msg": "Enters the application through a browser UI event"
+            }
+          ]
+        }
+      ],
+      "status": "OPEN",
+      "message": "Ensure that tainted data is sanitized before being written to browser storage.",
+      "effort": "20min",
+      "debt": "20min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "cwe"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-01T06:57:15+0000",
+      "type": "VULNERABILITY",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "TRUSTWORTHY",
+      "cleanCodeAttributeCategory": "RESPONSIBLE",
+      "impacts": [
+        {
+          "softwareQuality": "SECURITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "6e34c9df-5a89-4709-8c7d-d17ccbc3a027",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBn_OvV4K2eIZS7FtjO",
+      "rule": "typescript:S6551",
+      "severity": "MINOR",
+      "component": "bhavesh-bhatt-tech_skillsync:src/components/Markdown.tsx",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 10,
+      "hash": "7ad9e55935066cf136f95aca476ca7a9",
+      "textRange": {
+        "startLine": 10,
+        "endLine": 10,
+        "startOffset": 22,
+        "endOffset": 36
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "'children ?? ''' may use Object's default stringification format ('[object Object]') when stringified.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "object",
+        "string",
+        "type-dependent"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-03T15:55:33+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "aaabe261-456f-42e0-a9d0-ae8c257b50bf",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBbwtrOXl6pbvaNHI4Y",
+      "rule": "typescript:S2871",
+      "severity": "CRITICAL",
+      "component": "bhavesh-bhatt-tech_skillsync:src/components/Sidebar.tsx",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 40,
+      "hash": "80ad9ff45c1f022b1d6b9ae2c0f5b380",
+      "textRange": {
+        "startLine": 40,
+        "endLine": 40,
+        "startOffset": 65,
+        "endOffset": 69
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Provide a compare function that depends on \"String.localeCompare\", to reliably sort elements alphabetically.",
+      "effort": "10min",
+      "debt": "10min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "bad-practice",
+        "type-dependent"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-01T06:57:15+0000",
+      "type": "BUG",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "fefcbf18-c183-4535-ab59-8d664bace593",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBbwtrOXl6pbvaNHI4Z",
+      "rule": "typescript:S2871",
+      "severity": "CRITICAL",
+      "component": "bhavesh-bhatt-tech_skillsync:src/components/Sidebar.tsx",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 45,
+      "hash": "0325d9f6078e8b8f285c45793294299e",
+      "textRange": {
+        "startLine": 45,
+        "endLine": 45,
+        "startOffset": 66,
+        "endOffset": 70
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Provide a compare function that depends on \"String.localeCompare\", to reliably sort elements alphabetically.",
+      "effort": "10min",
+      "debt": "10min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [
+        "bad-practice",
+        "type-dependent"
+      ],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-01T06:57:15+0000",
+      "type": "BUG",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "fefcbf18-c183-4535-ab59-8d664bace593",
+      "lastChangeSource": "ANALYSIS"
+    },
+    {
+      "key": "AaBbwtt-Xl6pbvaNHI49",
+      "rule": "typescript:S6564",
+      "severity": "MAJOR",
+      "component": "bhavesh-bhatt-tech_skillsync:src/lib/types.ts",
+      "project": "bhavesh-bhatt-tech_skillsync",
+      "line": 1,
+      "hash": "c911ce57488b8b8e8250c58ba3760de8",
+      "textRange": {
+        "startLine": 1,
+        "endLine": 1,
+        "startOffset": 12,
+        "endOffset": 24
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this redundant type alias and replace its occurrences with \"string\".",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "bhavesh-bhatt-tech@github",
+      "author": "techcloudocean@gmail.com",
+      "tags": [],
+      "creationDate": "2026-08-28T12:53:10+0000",
+      "updateDate": "2026-09-01T06:57:15+0000",
+      "type": "CODE_SMELL",
+      "organization": "bhavesh-bhatt-tech",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "SkillSync",
+      "internalTags": [],
+      "lastChangeAnalysisUuid": "6e34c9df-5a89-4709-8c7d-d17ccbc3a027",
+      "lastChangeSource": "ANALYSIS"
+    }
+  ],
+  "components": [
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:server/index.ts",
+      "uuid": "AaBbwtMzXl6pbvaNHI4D",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "index.ts",
+      "longName": "server/index.ts",
+      "path": "server/index.ts"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:server/logger.ts",
+      "uuid": "AaBbwtMzXl6pbvaNHI4C",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "logger.ts",
+      "longName": "server/logger.ts",
+      "path": "server/logger.ts"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:src/components/QuestionCard.tsx",
+      "uuid": "AaBbwtMzXl6pbvaNHI3z",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "QuestionCard.tsx",
+      "longName": "src/components/QuestionCard.tsx",
+      "path": "src/components/QuestionCard.tsx"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:src/components/AdminGuard.tsx",
+      "uuid": "AaBbwtMzXl6pbvaNHI3y",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "AdminGuard.tsx",
+      "longName": "src/components/AdminGuard.tsx",
+      "path": "src/components/AdminGuard.tsx"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:src/main.tsx",
+      "uuid": "AaBbwtMzXl6pbvaNHI4A",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "main.tsx",
+      "longName": "src/main.tsx",
+      "path": "src/main.tsx"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:tests/components/Markdown.test.tsx",
+      "uuid": "AaBeOsa9ZKg2SfxhVgIT",
+      "enabled": true,
+      "qualifier": "UTS",
+      "name": "Markdown.test.tsx",
+      "longName": "tests/components/Markdown.test.tsx",
+      "path": "tests/components/Markdown.test.tsx"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:src/lib/types.ts",
+      "uuid": "AaBbwtMzXl6pbvaNHI33",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "types.ts",
+      "longName": "src/lib/types.ts",
+      "path": "src/lib/types.ts"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync",
+      "uuid": "AaBbwdoNMBABC3KQPZo2",
+      "enabled": true,
+      "qualifier": "TRK",
+      "name": "SkillSync",
+      "longName": "SkillSync"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:src/lib/xlsx.ts",
+      "uuid": "AaBbwtMzXl6pbvaNHI38",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "xlsx.ts",
+      "longName": "src/lib/xlsx.ts",
+      "path": "src/lib/xlsx.ts"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:src/components/Markdown.tsx",
+      "uuid": "AaBbwtMzXl6pbvaNHI3x",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "Markdown.tsx",
+      "longName": "src/components/Markdown.tsx",
+      "path": "src/components/Markdown.tsx"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:src/components/Toast.tsx",
+      "uuid": "AaBbwtMzXl6pbvaNHI3w",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "Toast.tsx",
+      "longName": "src/components/Toast.tsx",
+      "path": "src/components/Toast.tsx"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:src/components/Sidebar.tsx",
+      "uuid": "AaBbwtMzXl6pbvaNHI3v",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "Sidebar.tsx",
+      "longName": "src/components/Sidebar.tsx",
+      "path": "src/components/Sidebar.tsx"
+    },
+    {
+      "organization": "bhavesh-bhatt-tech",
+      "key": "bhavesh-bhatt-tech_skillsync:prisma/seed.ts",
+      "uuid": "AaBbwtMzXl6pbvaNHI4Q",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "seed.ts",
+      "longName": "prisma/seed.ts",
+      "path": "prisma/seed.ts"
+    }
+  ],
+  "organizations": [
+    {
+      "key": "bhavesh-bhatt-tech",
+      "name": "bhavesh bhatt"
+    }
+  ],
+  "facets": []
+}

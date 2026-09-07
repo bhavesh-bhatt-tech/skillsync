@@ -315,7 +315,7 @@ function QuestionForm(props: Readonly<{ editing: Question | null; onSaved: () =>
       subtopic: form.subtopic,
       question: form.question,
       answer: form.answer,
-      type: form.type as any,
+      type: form.type as never,
       starterCode: form.type === 'CODING' ? form.starter_code ?? null : null,
       skills: skillsText.split(',').map((s) => s.trim()).filter(Boolean),
       roles: rolesText.split(',').map((s) => s.trim()).filter(Boolean),

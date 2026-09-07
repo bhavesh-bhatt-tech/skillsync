@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Markdown } from '@/components/Markdown';
 import '@testing-library/jest-dom/vitest';
 
@@ -63,13 +63,7 @@ describe('Markdown', () => {
 
     expect(writeText).toHaveBeenCalledWith('const a = 1;\n');
     expect(await screen.findByText('Copied')).toBeInTheDocument();
-
-    vi.useFakeTimers();
-    vi.advanceTimersByTime(1500);
-    await waitFor(() => {
-      expect(screen.getByText('Copy')).toBeInTheDocument();
-    });
-    vi.useRealTimers();
+    expect(await screen.findByText('Copy', {}, { timeout: 3000 })).toBeInTheDocument();
   });
 
   it('normalizes inline markdown table into rows', () => {

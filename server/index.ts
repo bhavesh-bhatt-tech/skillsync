@@ -1,9 +1,8 @@
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
+import express, { Response } from 'express';
 import { logger } from './logger';
 
 export const app = express();
-const prisma = new PrismaClient();
+
 
 app.disable('x-powered-by');
 
@@ -26,7 +25,7 @@ app.use((req, res, next) => {
 });
 
 // Helper function for error responses
-function resError(res: any, status: number, error: string) {
+function resError(res: Response, status: number, error: string) {
   res.status(status).json({ error });
 }
 

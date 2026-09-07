@@ -21,7 +21,6 @@ export function Sidebar({
   onFiltersChange,
   selectedId,
   onSelect,
-  onSelectGroup,
 }: Readonly<SidebarProps>) {
   const [showFilters, setShowFilters] = useState(true);
   const [showSkills, setShowSkills] = useState(() => {

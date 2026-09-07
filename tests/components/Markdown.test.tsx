@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Markdown } from '@/components/Markdown';
 import '@testing-library/jest-dom/vitest';
 
@@ -66,7 +66,9 @@ describe('Markdown', () => {
 
     vi.useFakeTimers();
     vi.advanceTimersByTime(1500);
-    expect(screen.getByText('Copy')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Copy')).toBeInTheDocument();
+    });
     vi.useRealTimers();
   });
 

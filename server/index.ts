@@ -1,4 +1,5 @@
 import express, { Response } from 'express';
+import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import { logger } from './logger';
 import { setupSwagger } from './swagger';
@@ -8,6 +9,32 @@ const prisma = new PrismaClient();
 
 
 app.disable('x-powered-by');
+
+const allowedOrigins = [
+  'https://skillsync-five-neon.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL,
+].filter(Boolean) as string[];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        process.env.NODE_ENV !== 'production'
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-key'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  })
+);
 
 app.use(express.json());
 

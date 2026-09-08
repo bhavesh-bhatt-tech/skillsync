@@ -44,6 +44,14 @@ describe('Backend API Endpoints', () => {
     vi.clearAllMocks();
   });
 
+  it('GET /health handles CORS for production Vercel origin', async () => {
+    const res = await request(app)
+      .get('/health')
+      .set('Origin', 'https://skillsync-five-neon.vercel.app');
+    expect(res.status).toBe(200);
+    expect(res.headers['access-control-allow-origin']).toBe('https://skillsync-five-neon.vercel.app');
+  });
+
   it('GET /health returns ok', async () => {
     const res = await request(app).get('/health');
     expect(res.status).toBe(200);

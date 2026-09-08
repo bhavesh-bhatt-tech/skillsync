@@ -119,4 +119,17 @@ describe('Backend API Endpoints', () => {
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty('message');
   });
+
+  it('GET /api-docs.json returns swagger specification JSON', async () => {
+    const res = await request(app).get('/api-docs.json');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('openapi');
+    expect(res.body.info.title).toBe('SkillSync API');
+  });
+
+  it('GET /api-docs serves Swagger UI HTML', async () => {
+    const res = await request(app).get('/api-docs/');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('swagger');
+  });
 });

@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { logger } from './logger';
+import { setupSwagger } from './swagger';
 
 export const app = express();
 const prisma = new PrismaClient();
@@ -10,6 +11,27 @@ app.disable('x-powered-by');
 
 app.use(express.json());
 
+setupSwagger(app);
+
+
+/**
+ * @openapi
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Returns server health status
+ *     responses:
+ *       200:
+ *         description: Server is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ */
 app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok' });
 });
@@ -53,6 +75,65 @@ function normalizeQuestionInput(data: any) {
   };
 }
 
+/**
+ * @openapi
+ * /api/questions:
+ *   get:
+ *     summary: Get all questions with optional filtering
+ *     description: Retrieve a list of interview questions matching search query, role, skill, or experience filters.
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search keyword in question or answer
+ *       - in: query
+ *         name: role
+ *         schema:
+ *           type: string
+ *         description: Filter by target role
+ *       - in: query
+ *         name: skill
+ *         schema:
+ *           type: string
+ *         description: Filter by required skill
+ *       - in: query
+ *         name: experience
+ *         schema:
+ *           type: number
+ *         description: Filter by maximum minimum experience requirement
+ *     responses:
+ *       200:
+ *         description: List of questions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Question'
+ *       500:
+ *         description: Database query error
+ *   post:
+ *     summary: Create a new question
+ *     description: Add a new interview question to the database.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/QuestionInput'
+ *     responses:
+ *       201:
+ *         description: Created question
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Question'
+ *       400:
+ *         description: Validation error
+ *       500:
+ *         description: Creation failed
+ */
 app.get('/api/questions', async (req, res) => {
   try {
     const { search, role, skill, experience } = req.query;
@@ -110,6 +191,56 @@ app.post('/api/questions', async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/questions/{id}:
+ *   put:
+ *     summary: Update an existing question
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Question ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/QuestionInput'
+ *     responses:
+ *       200:
+ *         description: Updated question
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Question'
+ *       400:
+ *         description: Invalid ID or validation error
+ *       404:
+ *         description: Question not found
+ *       500:
+ *         description: Update failed
+ *   delete:
+ *     summary: Delete a question
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Question ID
+ *     responses:
+ *       200:
+ *         description: Deletion success
+ *       400:
+ *         description: Question ID is required
+ *       404:
+ *         description: Question not found
+ *       500:
+ *         description: Delete failed
+ */
 app.put('/api/questions/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -153,6 +284,39 @@ app.delete('/api/questions/:id', async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/questions/batch:
+ *   post:
+ *     summary: Batch process questions
+ *     description: Insert or update multiple questions in a transaction.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               $ref: '#/components/schemas/QuestionInput'
+ *     responses:
+ *       200:
+ *         description: Batch processing results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: integer
+ *                 inserted:
+ *                   type: integer
+ *                 updated:
+ *                   type: integer
+ *       400:
+ *         description: Payload must be an array of questions
+ *       500:
+ *         description: Batch processing failed
+ */
 app.post('/api/questions/batch', async (req, res) => {
   try {
     const payload = req.body;

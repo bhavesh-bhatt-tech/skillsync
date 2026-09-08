@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://skillsync-np8p.onrender.com/api';
 const ADMIN_KEY_STORAGE = 'admin_session';
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // ms

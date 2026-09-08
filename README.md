@@ -8,8 +8,11 @@
   <img alt="Prisma" src="https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white" />
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql&logoColor=white" />
   <img alt="Vitest" src="https://img.shields.io/badge/Vitest-Testing-6E9F18?logo=vitest&logoColor=white" />
-  <img alt="Coverage" src="https://img.shields.io/badge/Code%20Coverage-Available-8A2BE2" />
-  [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=bhavesh-bhatt-tech_skillsync&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)]
+  [![Maintainability issues](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=software_quality_maintainability_issues&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
+  [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=security_rating&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
+  [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=reliability_rating&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
+  [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=coverage&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
+  [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=alert_status&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
 </div>
 
 ## Contributions
@@ -35,13 +38,14 @@ SkillSync helps interviewers and candidates collect, organize, practice, and mai
 
 ## Quality, Monitoring & Production Links
 
-- **Code Coverage:** [Coverage & Testing](#technology-stack)  
-- **Code Quality / SonarQube:** [Architecture Overview](#architecture)  
-- **Monitoring / Logs:** [Environment & Runtime](#environment-variables)  
-- **API Management / Swagger:** [API & Backend](#architecture)  
+- **Code Coverage:** [SonarCloud Coverage](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)  
+- **Code Quality / SonarQube:** [SonarCloud Dashboard](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)  
+- **Monitoring / Logs:** [Render Dashboard](https://dashboard.render.com/)  
+- **API Management / Swagger:** [Render Swagger UI](https://skill-sync-api.onrender.com/api-docs)  
+- **Component Development / Storybook:** [Local Storybook (`http://localhost:6006`)](#storybook)  
 - **Production Frontend:** [Vercel App](https://skillsync-five-neon.vercel.app/)  
-- **Production Backend:** [Render API](https://skill-sync-api.onrender.com/)  
-- **Health Check:** [Render Health](https://skill-sync-api.onrender.com/health)  
+- **Production Backend:** [Render API](https://skillsync-np8p.onrender.com/)  
+- **Health Check:** [Render Health](https://skillsync-np8p.onrender.com/health)  
 - **Local Setup:** [Docker Compose](#docker-compose)  
 - **Development Guide:** [Local Development](#local-development-without-docker)  
 

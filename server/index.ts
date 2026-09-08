@@ -1,7 +1,9 @@
 import express, { Response } from 'express';
+import { PrismaClient } from '@prisma/client';
 import { logger } from './logger';
 
 export const app = express();
+const prisma = new PrismaClient();
 
 
 app.disable('x-powered-by');
@@ -57,13 +59,18 @@ app.get('/api/questions', async (req, res) => {
     const where: any = {};
     
     if (typeof search === 'string' && search.trim()) {
+      const searchStr = search.trim();
       where.OR = [
-        { question: { contains: search, mode: 'insensitive' } },
-        { answer: { contains: search, mode: 'insensitive' } },
+        { question: { contains: searchStr, mode: 'insensitive' } },
+        { answer: { contains: searchStr, mode: 'insensitive' } },
       ];
     }
-    if (typeof role === 'string' && role.trim()) where.roles = { has: role };
-    if (typeof skill === 'string' && skill.trim()) where.skills = { has: skill };
+    if (typeof role === 'string' && role.trim()) {
+      where.roles = { has: role.trim() };
+    }
+    if (typeof skill === 'string' && skill.trim()) {
+      where.skills = { has: skill.trim() };
+    }
     
     // FIX: Validate and convert experience safely instead of string concatenation
     if (experience) {

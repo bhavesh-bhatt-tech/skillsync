@@ -8,11 +8,12 @@
   <img alt="Prisma" src="https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white" />
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql&logoColor=white" />
   <img alt="Vitest" src="https://img.shields.io/badge/Vitest-Testing-6E9F18?logo=vitest&logoColor=white" />
-  [![Maintainability issues](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=software_quality_maintainability_issues&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
-  [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=security_rating&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
-  [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=reliability_rating&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
-  [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=coverage&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
-  [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=alert_status&token=fdd8a6a691af05e00559063b7321a04e2f10ce75)](https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync)
+  <br />
+  <a href="https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync"><img src="https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=software_quality_maintainability_issues&token=fdd8a6a691af05e00559063b7321a04e2f10ce75" alt="Maintainability issues" /></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync"><img src="https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=security_rating&token=fdd8a6a691af05e00559063b7321a04e2f10ce75" alt="Security Rating" /></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync"><img src="https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=reliability_rating&token=fdd8a6a691af05e00559063b7321a04e2f10ce75" alt="Reliability Rating" /></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync"><img src="https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=coverage&token=fdd8a6a691af05e00559063b7321a04e2f10ce75" alt="Coverage" /></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=bhavesh-bhatt-tech_skillsync"><img src="https://sonarcloud.io/api/project_badges/measure?project=bhavesh-bhatt-tech_skillsync&metric=alert_status&token=fdd8a6a691af05e00559063b7321a04e2f10ce75" alt="Quality gate status" /></a>
 </div>
 
 ## Contributions

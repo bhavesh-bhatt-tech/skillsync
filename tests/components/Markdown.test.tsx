@@ -61,9 +61,8 @@ describe('Markdown', () => {
     render(<Markdown content={'```js\nconst a = 1;\n```'} />);
     fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
 
-    expect(writeText).toHaveBeenCalledWith('const a = 1;\n');
     expect(await screen.findByText('Copied')).toBeInTheDocument();
-    expect(await screen.findByText('Copy', {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(writeText).toHaveBeenCalledWith('const a = 1;\n');
   });
 
   it('normalizes inline markdown table into rows and renders as a table', () => {

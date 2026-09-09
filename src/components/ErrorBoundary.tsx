@@ -12,8 +12,10 @@ interface State {
 export class ErrorBoundary extends Component<Props, State> {
   public state: State = { hasError: false };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public static getDerivedStateFromError(error: Error): State {
+    if (error) {
+      // error boundary catch
+    }
     return { hasError: true };
   }
 

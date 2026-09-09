@@ -73,7 +73,7 @@ describe('QuestionCard', () => {
       value: undefined,
     });
     const execCommand = vi.fn().mockReturnValue(true);
-    Object.defineProperty(document, 'execCommand', {
+    Object.defineProperty(Document.prototype, 'execCommand', {
       configurable: true,
       value: execCommand,
     });

@@ -17,11 +17,19 @@ const ToastContext = React.createContext<ToastContextType | undefined>(undefined
 
 // FIX 1: Use cryptographically secure ID generation
 function generateSecureId(): string {
-  const cryptoObj = (typeof window !== 'undefined' ? (window as any).crypto : undefined) as any;
+  // Define an interface for global objects that might have crypto
+  interface GlobalWithCrypto {
+    crypto?: Crypto;
+  }
+
+  // Try to get crypto from window (browser) or globalThis (Node/environment)
+  const cryptoObj = (typeof window !== 'undefined' ? (window as Window).crypto : undefined) ||
+                    (typeof globalThis !== 'undefined' ? (globalThis as GlobalWithCrypto).crypto : undefined);
+
   if (cryptoObj && typeof cryptoObj.randomUUID === 'function') {
     return cryptoObj.randomUUID();
   }
-  if (cryptoObj && cryptoObj.getRandomValues) {
+  if (cryptoObj && typeof cryptoObj.getRandomValues === 'function') {
     const arr = new Uint8Array(8);
     cryptoObj.getRandomValues(arr);
     return Array.from(arr, byte => byte.toString(16).padStart(2, '0')).join('');

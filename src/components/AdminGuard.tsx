@@ -12,9 +12,16 @@ function getConfiguredAdminKey() {
  * precautionary measure.
  */
 function sanitizeAdminKey(key: string): string {
-  // Ensure the key is treated as a plain string and remove any
-  // potential control characters just in case.
-  return key.replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
+  // Treat as plain string and remove control characters (ASCII 0-31 and 127-159)
+  let result = '';
+  for (let i = 0; i < key.length; i++) {
+    const code = key.charCodeAt(i);
+    if ((code >= 0 && code <= 31) || (code >= 127 && code <= 159)) {
+      continue;
+    }
+    result += key[i];
+  }
+  return result;
 }
 
 function hasValidSessionKey() {

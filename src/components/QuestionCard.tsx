@@ -69,7 +69,6 @@ function CodingCard({ question }: Readonly<{ question: Question }>) {
         document.body.appendChild(textarea);
         textarea.focus();
         textarea.select();
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
         document.execCommand('copy');
         document.body.removeChild(textarea);
       }
@@ -81,7 +80,6 @@ function CodingCard({ question }: Readonly<{ question: Question }>) {
       timeoutRef.current = window.setTimeout(() => setCopied(false), 1500);
     } catch (err) {
       // Log the error for observability and avoid breaking the UI by not rethrowing.
-      // eslint-disable-next-line no-console
       console.error('Failed to copy answer to clipboard', err);
       setCopied(false);
     }

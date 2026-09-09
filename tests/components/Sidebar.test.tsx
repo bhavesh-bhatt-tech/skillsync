@@ -145,11 +145,11 @@ describe('Sidebar', () => {
       />
     );
 
-    expect(screen.getByPlaceholderText('Search titles & answers...')).toBeInTheDocument();
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Hide Filters' }));
-    expect(screen.queryByPlaceholderText('Search titles & answers...')).not.toBeInTheDocument();
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Show Filters' }));
-    expect(screen.getByPlaceholderText('Search titles & answers...')).toBeInTheDocument();
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
   });
 
   it('updates role and minimum experience filters', () => {
@@ -168,7 +168,7 @@ describe('Sidebar', () => {
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Frontend' } });
     expect(onFiltersChange).toHaveBeenCalledWith(expect.objectContaining({ role: 'Frontend' }));
 
-    fireEvent.change(screen.getByPlaceholderText('Min Experience (years)'), { target: { value: '-5' } });
+    fireEvent.change(screen.getByLabelText('Min Experience'), { target: { value: 0 } });
     expect(onFiltersChange).toHaveBeenCalledWith(expect.objectContaining({ minExperience: 0 }));
   });
 
@@ -184,9 +184,11 @@ describe('Sidebar', () => {
       />
     );
 
-    expect(screen.getByText('Java 21')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Hide All' }));
-    expect(screen.queryByText('Java 21')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Java 21' })).toBeInTheDocument();
+    const checkbox = screen.getByRole('checkbox', { name: /show skills/i });
+    fireEvent.click(checkbox);
+    fireEvent.change(checkbox, { target: { checked: false } });
+    expect(screen.queryByRole('button', { name: 'Java 21' })).not.toBeInTheDocument();
     expect(window.localStorage.getItem('skillsync.library.showSkills')).toBe('false');
   });
 

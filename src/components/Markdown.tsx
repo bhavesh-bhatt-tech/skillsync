@@ -182,7 +182,7 @@ function normalizeInlineTable(content: string) {
     rows.push(body.slice(index, index + columnCount));
   }
 
-  return rows.map((row) => `| ${row.join(' | ')} |`).join('\n');
+  return '\n\n' + rows.map((row) => `| ${row.join(' | ')} |`).join('\n') + '\n\n';
 }
 
 function ensureClosedCodeBlocks(content: string) {

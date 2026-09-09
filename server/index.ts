@@ -81,19 +81,24 @@ function resError(res: Response, status: number, error: string) {
 }
 
 // ISSUE 1 & 2: Extract validation logic & safer type handling
-function validateQuestionInput(data: any): { valid: boolean; error?: string } {
-  if (!data.topic?.trim() || !data.subtopic?.trim() || !data.question?.trim() || !data.answer?.trim()) {
+function validateQuestionInput(data: Record<string, unknown>): { valid: boolean; error?: string } {
+  const topic = typeof data.topic === 'string' ? data.topic : '';
+  const subtopic = typeof data.subtopic === 'string' ? data.subtopic : '';
+  const question = typeof data.question === 'string' ? data.question : '';
+  const answer = typeof data.answer === 'string' ? data.answer : '';
+
+  if (!topic.trim() || !subtopic.trim() || !question.trim() || !answer.trim()) {
     return { valid: false, error: 'topic, subtopic, question, and answer are required' };
   }
   return { valid: true };
 }
 
-function normalizeQuestionInput(data: any) {
+function normalizeQuestionInput(data: Record<string, unknown>) {
   return {
-    topic: data.topic.trim(),
-    subtopic: data.subtopic.trim(),
-    question: data.question.trim(),
-    answer: data.answer.trim(),
+    topic: String(data.topic || '').trim(),
+    subtopic: String(data.subtopic || '').trim(),
+    question: String(data.question || '').trim(),
+    answer: String(data.answer || '').trim(),
     type: String(data.type || 'CONCEPTUAL').toUpperCase(),
     starterCode: data.starterCode ?? null,
     skills: Array.isArray(data.skills) ? data.skills : [],
@@ -164,7 +169,7 @@ function normalizeQuestionInput(data: any) {
 app.get('/api/questions', async (req, res) => {
   try {
     const { search, role, skill, experience } = req.query;
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     
     if (typeof search === 'string' && search.trim()) {
       const searchStr = search.trim();
@@ -354,7 +359,7 @@ app.post('/api/questions/batch', async (req, res) => {
     let inserted = 0;
     let updated = 0;
 
-    await prisma.$transaction(async (tx: any) => {
+    await prisma.$transaction(async (tx) => {
       for (const item of payload) {
         const validation = validateQuestionInput(item);
         if (!validation.valid) {

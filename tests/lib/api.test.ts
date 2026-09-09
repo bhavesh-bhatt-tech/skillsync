@@ -144,6 +144,7 @@ describe('api client', () => {
     vi.spyOn(global, 'fetch').mockRejectedValue(new Error('offline'));
 
     const promise = fetchQuestions();
+    promise.catch(() => {});
     
     // Advance timers for the retries
     await vi.advanceTimersByTimeAsync(3000);

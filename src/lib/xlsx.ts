@@ -28,7 +28,6 @@ function asText(value: unknown): string {
   if (typeof value === 'string') return value.trim();
   if (typeof value === 'number') return String(value).trim();
   if (typeof value === 'boolean') return String(value);
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   if (typeof value === 'object') return JSON.stringify(value);
   return String(value).trim();
 }

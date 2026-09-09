@@ -75,7 +75,7 @@ describe('App', () => {
   });
 
   it('switches to admin view after authenticating', async () => {
-    // @ts-ignore
+    // @ts-expect-error type override
     import.meta.env.VITE_ADMIN_KEY = 'admin-secret';
     vi.mocked(api.fetchAdminQuestions).mockResolvedValue([
       {

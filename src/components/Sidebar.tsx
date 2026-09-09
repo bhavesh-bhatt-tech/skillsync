@@ -160,7 +160,7 @@ export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSel
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Library</h2>
           {hasFilters && (
             <button onClick={clearAll} className="flex items-center gap-1 text-xs text-slate-400 hover:text-rose-600">
-              <X className="h-3 w-3" /> Clear
+              <X className="h-3 w-3" /> Clear All
             </button>
           )}
         </div>
@@ -184,6 +184,7 @@ export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSel
       >
         <button
           onClick={() => setShowFilters((v) => !v)}
+          aria-label={showFilters ? 'Hide Filters' : 'Show Filters'}
           className="flex w-full items-center justify-between text-sm font-semibold text-slate-700"
         >
           <span className="flex items-center gap-2">
@@ -244,12 +245,13 @@ export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSel
 
             <div>
               <div className="mb-1 flex items-center justify-between">
-                <label className="text-xs font-medium uppercase tracking-wide text-slate-500">Min Experience</label>
+                <label htmlFor="min-experience" className="text-xs font-medium uppercase tracking-wide text-slate-500">Min Experience</label>
                 <span className="text-xs font-semibold text-slate-700">
                   {filters.minExperience === 0 ? 'Any' : `${filters.minExperience}+ yrs`}
                 </span>
               </div>
               <input
+                id="min-experience"
                 type="range"
                 min={0}
                 max={15}

@@ -14,7 +14,7 @@ function getConfiguredAdminKey() {
 function sanitizeAdminKey(key: string): string {
   // Ensure the key is treated as a plain string and remove any
   // potential control characters just in case.
-  return key.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+  return key.replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
 }
 
 function hasValidSessionKey() {

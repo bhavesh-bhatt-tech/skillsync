@@ -17,12 +17,13 @@ const ToastContext = React.createContext<ToastContextType | undefined>(undefined
 
 // FIX 1: Use cryptographically secure ID generation
 function generateSecureId(): string {
-  if (typeof crypto !== 'undefined' && typeof (crypto as any).randomUUID === 'function') {
-    return (crypto as any).randomUUID();
+  const cryptoObj = (typeof window !== 'undefined' ? (window as any).crypto : undefined) as any;
+  if (cryptoObj && typeof cryptoObj.randomUUID === 'function') {
+    return cryptoObj.randomUUID();
   }
-  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+  if (cryptoObj && cryptoObj.getRandomValues) {
     const arr = new Uint8Array(8);
-    crypto.getRandomValues(arr);
+    cryptoObj.getRandomValues(arr);
     return Array.from(arr, byte => byte.toString(16).padStart(2, '0')).join('');
   }
   return `toast-${Date.now()}`;

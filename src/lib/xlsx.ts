@@ -1,12 +1,12 @@
 import * as XLSX from 'xlsx';
 const { read } = XLSX;
-
+import { type Question } from './types';
 export interface QuestionInput {
   topic: string;
   subtopic: string;
   question: string;
   answer: string;
-  type: 'CONCEPTUAL' | 'PRACTICAL' | 'SYSTEM_DESIGN';
+  type: 'CONCEPTUAL' | 'PRACTICAL' | 'SYSTEM_DESIGN' | 'CODING';
   starter_code: string | null;
   skills: string[];
   roles: string[];
@@ -18,14 +18,17 @@ export interface ParsedSpreadsheetResult {
   errors: string[];
 }
 
-type QuestionType = 'CONCEPTUAL' | 'PRACTICAL' | 'SYSTEM_DESIGN';
+type QuestionType = 'CONCEPTUAL' | 'PRACTICAL' | 'SYSTEM_DESIGN' | 'CODING';
 
-// FIX 1: Improved null safety
+
+
+// FIX: Utility function for safe column access
 function asText(value: unknown): string {
   if (value === undefined || value === null) return '';
   if (typeof value === 'string') return value.trim();
   if (typeof value === 'number') return String(value).trim();
   if (typeof value === 'boolean') return String(value);
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   if (typeof value === 'object') return JSON.stringify(value);
   return String(value).trim();
 }
@@ -38,9 +41,19 @@ function parseList(value: string): string[] {
     .filter((item) => item.length > 0);
 }
 
-// FIX 2: Better error handling and type safety
-export function downloadQuestionsXlsx(filename: string, questions: any[]) {
-  const ws = XLSX.utils.json_to_sheet(questions);
+export function downloadQuestionsXlsx(filename: string, questions: Question[]) {
+  const formattedQuestions = questions.map(q => ({
+    topic: q.topic,
+    subtopic: q.subtopic,
+    question: q.question,
+    answer: q.answer,
+    type: q.type,
+    starterCode: q.starter_code,
+    skills: q.skills.join(', '),
+    roles: q.roles.join(', '),
+    minExperience: q.min_experience,
+  }));
+  const ws = XLSX.utils.json_to_sheet(formattedQuestions);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Questions');
   XLSX.writeFile(wb, filename);

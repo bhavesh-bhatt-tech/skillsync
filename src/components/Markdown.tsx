@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 
@@ -233,7 +234,7 @@ function MarkdownCodeRenderer({ children }: Readonly<{ children?: React.ReactNod
 export function Markdown({ content }: MarkdownProps) {
   return (
     <div className="markdown-content prose prose-base max-w-none prose-headings:font-semibold prose-headings:text-slate-900 prose-p:text-slate-700 prose-li:text-slate-700 prose-strong:text-slate-900 prose-code:rounded-none prose-code:bg-transparent prose-code:px-0 prose-code:py-0 prose-code:text-inherit prose-code:font-normal prose-code:not-italic prose-code:text-slate-900 prose-code:before:content-none prose-code:after:content-none prose-blockquote:border-l-sky-400 prose-blockquote:bg-sky-50 prose-blockquote:py-1 prose-blockquote:text-slate-700 prose-table:overflow-hidden prose-table:border prose-th:bg-slate-50 prose-th:px-3 prose-th:py-1.5 prose-th:text-left prose-th:text-xs prose-th:font-semibold prose-th:uppercase prose-th:tracking-wide prose-th:text-slate-600 prose-td:px-3 prose-td:py-1.5 prose-td:text-sm prose-td:text-slate-700">
-      <ReactMarkdown components={{ pre: MarkdownCodeRenderer }}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ pre: MarkdownCodeRenderer }}>
         {normalizeMarkdown(content)}
       </ReactMarkdown>
     </div>

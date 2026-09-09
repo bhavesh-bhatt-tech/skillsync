@@ -93,7 +93,7 @@ describe('Sidebar', () => {
     );
 
     fireEvent.click(screen.getByText('What are virtual threads?'));
-    expect(onSelect).toHaveBeenCalledWith(sampleQuestions[0].id);
+    expect(onSelect).toHaveBeenCalledWith(sampleQuestions[0]);
   });
 
   it('toggles skill filter when skill pill is clicked', () => {
@@ -141,6 +141,7 @@ describe('Sidebar', () => {
         onFiltersChange={() => {}}
         selectedId={null}
         onSelect={() => {}}
+        onSelectGroup={() => {}}
       />
     );
 
@@ -160,6 +161,7 @@ describe('Sidebar', () => {
         onFiltersChange={onFiltersChange}
         selectedId={null}
         onSelect={() => {}}
+        onSelectGroup={() => {}}
       />
     );
 
@@ -178,6 +180,7 @@ describe('Sidebar', () => {
         onFiltersChange={() => {}}
         selectedId={null}
         onSelect={() => {}}
+        onSelectGroup={() => {}}
       />
     );
 
@@ -197,6 +200,7 @@ describe('Sidebar', () => {
         onFiltersChange={() => {}}
         selectedId={null}
         onSelect={() => {}}
+        onSelectGroup={() => {}}
       />
     );
 

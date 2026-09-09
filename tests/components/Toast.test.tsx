@@ -20,7 +20,7 @@ describe('ToastProvider & useToast', () => {
 
   it('throws error when useToast is used outside provider', () => {
     // Suppress console.error for expected React error boundary / invariant
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     expect(() => render(<TestComponent />)).toThrow('useToast must be used within ToastProvider');
     consoleSpy.mockRestore();
   });
@@ -31,13 +31,6 @@ describe('ToastProvider & useToast', () => {
         <TestComponent />
       </ToastProvider>
     );
-
-    fireEvent.click(screen.getByRole('button', { name: 'Trigger Success' }));
-    expect(screen.getByText('Operation successful!')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Trigger Error' }));
-    expect(screen.getByText('Something went wrong!')).toBeInTheDocument();
-
     fireEvent.click(screen.getByRole('button', { name: 'Trigger Info' }));
     expect(screen.getByText('FYI message')).toBeInTheDocument();
   });

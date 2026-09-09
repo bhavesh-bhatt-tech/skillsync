@@ -66,9 +66,12 @@ describe('Markdown', () => {
     expect(await screen.findByText('Copy', {}, { timeout: 3000 })).toBeInTheDocument();
   });
 
-  it('normalizes inline markdown table into rows', () => {
+  it('normalizes inline markdown table into rows and renders as a table', () => {
     const { container } = render(<Markdown content={'| col1 | col2 | --- | --- | a | b |'} />);
-    expect(container.textContent).toContain('| col1 | col2 |');
-    expect(container.textContent).toContain('| a | b |');
+    expect(container.querySelector('table')).toBeInTheDocument();
+    expect(screen.getByText('col1')).toBeInTheDocument();
+    expect(screen.getByText('col2')).toBeInTheDocument();
+    expect(screen.getByText('a')).toBeInTheDocument();
+    expect(screen.getByText('b')).toBeInTheDocument();
   });
 });

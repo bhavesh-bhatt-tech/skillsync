@@ -143,10 +143,14 @@ describe('api client', () => {
     vi.useFakeTimers();
     vi.spyOn(global, 'fetch').mockRejectedValue(new Error('offline'));
 
-    const assertion = expect(fetchQuestions()).rejects.toThrow('offline');
+    const promise = fetchQuestions();
+    
+    // Advance timers for the retries
     await vi.advanceTimersByTimeAsync(3000);
-    await assertion;
+    
+    await expect(promise).rejects.toThrow('offline');
     expect(vi.mocked(fetch)).toHaveBeenCalledTimes(3);
+    vi.useRealTimers();
   });
 
   it('creates a question successfully', async () => {

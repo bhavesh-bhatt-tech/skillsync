@@ -17,9 +17,15 @@ const ToastContext = React.createContext<ToastContextType | undefined>(undefined
 
 // FIX 1: Use cryptographically secure ID generation
 function generateSecureId(): string {
-  const arr = new Uint8Array(8);
-  crypto.getRandomValues(arr);
-  return Array.from(arr, byte => byte.toString(16).padStart(2, '0')).join('');
+  if (typeof crypto !== 'undefined' && typeof (crypto as any).randomUUID === 'function') {
+    return (crypto as any).randomUUID();
+  }
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const arr = new Uint8Array(8);
+    crypto.getRandomValues(arr);
+    return Array.from(arr, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+  return `toast-${Date.now()}`;
 }
 
 interface ToastProviderProps {
@@ -28,21 +34,25 @@ interface ToastProviderProps {
 
 export function ToastProvider({ children }: Readonly<ToastProviderProps>) {
   const [toasts, setToasts] = useState<Toast[]>([]);
-  const timeoutIdsRef = useRef<number[]>([]);
+  const timeoutIdsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   useEffect(() => () => {
-    timeoutIdsRef.current.forEach((id) => clearTimeout(id));
-    timeoutIdsRef.current = [];
+    timeoutIdsRef.current.forEach((timeoutId) => clearTimeout(timeoutId));
+    timeoutIdsRef.current.clear();
   }, []);
 
   const notify = useCallback((type: ToastType, message: string) => {
     const id = generateSecureId();
     const newToast: Toast = { id, type, message };
     setToasts((prev) => [...prev, newToast]);
-    const timeoutId = window.setTimeout(() => {
+    
+    const timeoutId = setTimeout(() => {
+      // eslint-disable-next-line sonarjs/no-nested-functions
       setToasts((prev) => prev.filter((t) => t.id !== id));
+      timeoutIdsRef.current.delete(id);
     }, 3000);
-    timeoutIdsRef.current.push(timeoutId);
+    
+    timeoutIdsRef.current.set(id, timeoutId);
   }, []);
 
   const value: ToastContextType = useMemo(() => ({ notify }), [notify]);
@@ -77,6 +87,7 @@ export function ToastProvider({ children }: Readonly<ToastProviderProps>) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useToast(): ToastContextType {
   const context = useContext(ToastContext);
   if (!context) {

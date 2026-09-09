@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { AdminGuard } from '@/components/AdminGuard';
 import { ADMIN_KEY_STORAGE } from '@/lib/adminAuth';
@@ -7,8 +7,11 @@ describe('AdminGuard', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     sessionStorage.clear();
-    // @ts-ignore
-    import.meta.env.VITE_ADMIN_KEY = 'correct-key';
+    vi.stubEnv('VITE_ADMIN_KEY', 'correct-key');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it('renders login form when not authenticated', () => {
@@ -84,8 +87,7 @@ describe('AdminGuard', () => {
   });
 
   it('shows a configuration error when no admin key is configured', () => {
-    // @ts-ignore
-    import.meta.env.VITE_ADMIN_KEY = '';
+    vi.stubEnv('VITE_ADMIN_KEY', '');
 
     render(
       <AdminGuard>

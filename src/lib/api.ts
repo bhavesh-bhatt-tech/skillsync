@@ -61,7 +61,7 @@ export interface Question {
   subtopic: string;
   question: string;
   answer: string;
-  type: 'CONCEPTUAL' | 'PRACTICAL' | 'SYSTEM_DESIGN';
+  type: 'CONCEPTUAL' | 'PRACTICAL' | 'SYSTEM_DESIGN' | 'CODING';
   starterCode?: string | null;
   skills: string[];
   roles: string[];
@@ -92,6 +92,80 @@ function toQuestion(q: ApiQuestion): AppQuestion {
   };
 }
 
+const FALLBACK_QUESTIONS: AppQuestion[] = [
+  {
+    id: 'fallback-1',
+    topic: 'Java',
+    subtopic: 'Concurrency',
+    question: 'What are Virtual Threads in Java 21 and how do they improve throughput?',
+    answer:
+      '**Virtual Threads** (JEP 444) are lightweight threads managed by the JVM rather than the OS.\n\n' +
+      '## Why they matter\n\n' +
+      '| Platform Thread | Virtual Thread |\n|---|---|\n| ~1 MB stack | ~few KB stack |\n| OS-scheduled | JVM-scheduled |\n| ~thousands max | ~millions max |\n\n' +
+      '```java\ntry (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    IntStream.range(0, 10_000).forEach(i ->\n        executor.submit(() -> { Thread.sleep(Duration.ofSeconds(1)); return i; })\n    );\n}\n```',
+    type: 'CONCEPTUAL',
+    skills: ['Java 21', 'Concurrency', 'Virtual Threads'],
+    roles: ['Backend Engineer', 'Tech Lead'],
+    minExperience: 5,
+  },
+  {
+    id: 'fallback-2',
+    topic: 'Java',
+    subtopic: 'Data Structures',
+    question: 'Implement an LRU Cache in Java',
+    answer:
+      'Design a Least Recently Used (LRU) cache with **O(1)** get and put operations.\n\n' +
+      '## Approach\n\nCombine a **doubly linked list** with a **hash map**.\n\n' +
+      '| Operation | Time | Space |\n|---|---|---|\n| get | O(1) | O(capacity) |\n| put | O(1) | O(capacity) |',
+    type: 'CODING',
+    starterCode:
+      'import java.util.*;\n\nclass LRUCache {\n    private final int capacity;\n    private final Map<Integer, Node> map = new HashMap<>();\n\n    static class Node { int key, val; Node prev, next; Node(int k, int v) { key = k; val = v; } }\n\n    public LRUCache(int capacity) { this.capacity = capacity; }\n\n    public int get(int key) { return -1; }\n\n    public void put(int key, int value) { }\n}',
+    skills: ['Java', 'Data Structures', 'Design Patterns'],
+    roles: ['Software Engineer', 'Senior Software Engineer'],
+    minExperience: 3,
+  },
+  {
+    id: 'fallback-3',
+    topic: 'DevSecOps',
+    subtopic: 'CI/CD',
+    question: 'How do you integrate security into a DevSecOps pipeline?',
+    answer:
+      '**DevSecOps** shifts security *left* — baking automated security checks into every stage of the CI/CD pipeline.\n\n' +
+      '## Pipeline stages and tooling\n\n' +
+      '| Stage | Control | Example Tools |\n|---|---|---|\n| Source | Pre-commit hooks, secret scanning | gitleaks, trufflehog |\n| Build | SAST, dependency scanning | SonarQube, Snyk |\n| Package | Image scanning | Trivy, Grype |\n| Deploy | IaC scanning, policy gates | OPA, tfsec |\n| Runtime | Container & runtime monitoring | Falco, Aqua |',
+    type: 'CONCEPTUAL',
+    skills: ['DevSecOps', 'CI/CD', 'Security'],
+    roles: ['DevOps Engineer', 'Platform Engineer', 'Tech Lead'],
+    minExperience: 7,
+  },
+];
+
+function filterFallbackQuestions(filters?: {
+  search?: string;
+  role?: string;
+  skill?: string;
+  minExperience?: number;
+}): AppQuestion[] {
+  let result = [...FALLBACK_QUESTIONS];
+  if (filters?.search?.trim()) {
+    const term = filters.search.trim().toLowerCase();
+    result = result.filter(q => q.question.toLowerCase().includes(term) || q.answer.toLowerCase().includes(term));
+  }
+  if (filters?.role?.trim()) {
+    const role = filters.role.trim();
+    result = result.filter(q => q.roles.includes(role));
+  }
+  if (filters?.skill?.trim()) {
+    const skill = filters.skill.trim();
+    result = result.filter(q => q.skills.includes(skill));
+  }
+  if (filters?.minExperience !== undefined && filters.minExperience > 0) {
+    const exp = filters.minExperience;
+    result = result.filter(q => q.minExperience <= exp);
+  }
+  return result;
+}
+
 export async function fetchQuestions(filters?: {
   search?: string;
   role?: string;
@@ -110,16 +184,20 @@ export async function fetchQuestions(filters?: {
   const query = queryParams.toString();
   const url = query ? `${API_BASE_URL}/questions?${query}` : `${API_BASE_URL}/questions`;
   
-  try {
-    const response = await apiFetch(url);
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(extractErrorMessage(errorData));
-    }
-    return (await response.json() as ApiQuestion[]).map(toQuestion);
-  } catch (error) {
-    throw error instanceof Error ? error : new Error('Failed to fetch questions');
+  const response = await apiFetch(url);
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(extractErrorMessage(errorData));
   }
+  
+  const data = await response.json() as ApiQuestion[];
+  
+  if (!Array.isArray(data) || data.length === 0) {
+    return filterFallbackQuestions(filters);
+  }
+  
+  return data.map(toQuestion);
 }
 
 export async function fetchAdminQuestions(): Promise<AppQuestion[]> {

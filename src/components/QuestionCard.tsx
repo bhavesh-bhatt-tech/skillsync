@@ -69,7 +69,7 @@ function CodingCard({ question }: Readonly<{ question: Question }>) {
         document.body.appendChild(textarea);
         textarea.focus();
         textarea.select();
-        // NOSONAR
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         document.execCommand('copy');
         document.body.removeChild(textarea);
       }

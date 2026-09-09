@@ -62,11 +62,13 @@ function AppInner() {
   }, []);
 
   const load = useCallback(async () => {
+    setLoading(true);
     try {
-      const data = await fetchQuestions(filters);
+      const data: Question[] = (await fetchQuestions(filters)) as unknown as Question[];
       setQuestions(data);
     } catch (e) {
-      notify('error', `Failed to load questions: ${(e as Error).message}`);
+      const message = e instanceof Error ? e.message : String(e);
+      notify('error', `Failed to load questions: ${message}`);
       setQuestions([]);
     } finally {
       setLoading(false);
@@ -76,9 +78,11 @@ function AppInner() {
   const loadAdmin = useCallback(async () => {
     setAdminLoading(true);
     try {
-      setAdminQuestions(await fetchAdminQuestions());
+      const data: Question[] = (await fetchAdminQuestions()) as unknown as Question[];
+      setAdminQuestions(data);
     } catch (e) {
-      notify('error', `Failed to load admin questions: ${(e as Error).message}`);
+      const message = e instanceof Error ? e.message : String(e);
+      notify('error', `Failed to load admin questions: ${message}`);
       setAdminQuestions([]);
     } finally {
       setAdminLoading(false);
@@ -168,10 +172,7 @@ function AppInner() {
                   filters={filters}
                   onFiltersChange={setFilters}
                   selectedId={selected?.id ?? null}
-                  onSelect={(id) => {
-                    const q = questions.find(question => question.id === id);
-                    if (q) selectQuestion(q);
-                  }}
+                  onSelect={selectQuestion}
                   onSelectGroup={selectQuestionGroup}
                 />
               )}

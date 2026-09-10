@@ -62,6 +62,23 @@ function CodingCard({ question }: Readonly<{ question: Question }>) {
       const textToCopy = question.answer ?? '';
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(textToCopy);
+      } else if (typeof document !== 'undefined' && 'execCommand' in document) {
+        const textArea = document.createElement('textarea');
+        textArea.value = textToCopy;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        try {
+          textArea.focus();
+          textArea.select();
+          const doc = document as unknown as { execCommand?: (command: string) => boolean };
+          const successful = doc.execCommand?.('copy');
+          if (!successful) {
+            throw new Error('execCommand copy failed');
+          }
+        } finally {
+          textArea.remove();
+        }
       } else {
         throw new Error('Clipboard API not supported');
       }

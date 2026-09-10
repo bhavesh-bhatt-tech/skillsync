@@ -11,25 +11,38 @@ function getStoredHeight(storageKey: string, defaultHeight: number) {
   return Math.min(SECTION_MAX_HEIGHT, Math.max(SECTION_MIN_HEIGHT, storedHeight));
 }
 
+interface ResizableSectionProps {
+  storageKey: string;
+  defaultHeight: number;
+  heightOverride?: number;
+  children: React.ReactNode;
+  className?: string;
+}
+
 function ResizableSection({
   storageKey,
   defaultHeight,
   heightOverride,
   children,
   className = '',
-}: Readonly<{
-  storageKey: string;
-  defaultHeight: number;
-  heightOverride?: number;
-  children: React.ReactNode;
-  className?: string;
-}>) {
+}: Readonly<ResizableSectionProps>) {
   const [height, setHeight] = useState(() => getStoredHeight(storageKey, defaultHeight));
+  const [isResizing, setIsResizing] = useState(false);
   const startRef = useRef<{ y: number; height: number } | null>(null);
 
   useEffect(() => {
     window.localStorage.setItem(storageKey, String(height));
   }, [height, storageKey]);
+
+  useEffect(() => {
+    if (isResizing) {
+      document.body.style.cursor = 'row-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.body.style.removeProperty('cursor');
+      document.body.style.removeProperty('user-select');
+    }
+  }, [isResizing]);
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
@@ -39,8 +52,7 @@ function ResizableSection({
     };
     const stopResizing = () => {
       startRef.current = null;
-      document.body.style.removeProperty('cursor');
-      document.body.style.removeProperty('user-select');
+      setIsResizing(false);
     };
 
     window.addEventListener('pointermove', handlePointerMove);
@@ -66,13 +78,11 @@ function ResizableSection({
           event.preventDefault();
           event.currentTarget.setPointerCapture(event.pointerId);
           startRef.current = { y: event.clientY, height };
-          document.body.style.cursor = 'row-resize';
-          document.body.style.userSelect = 'none';
+          setIsResizing(true);
         }}
         onPointerCancel={() => {
           startRef.current = null;
-          document.body.style.removeProperty('cursor');
-          document.body.style.removeProperty('user-select');
+          setIsResizing(false);
         }}
         onKeyDown={(event) => {
           if (event.key === 'ArrowUp') { event.preventDefault(); adjustHeight(-16); }
@@ -97,7 +107,7 @@ interface SidebarProps {
   onSelectGroup: (questions: Question[]) => void;
 }
 
-export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSelect, onSelectGroup }: SidebarProps) {
+export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSelect, onSelectGroup }: Readonly<SidebarProps>) {
   const [showFilters, setShowFilters] = useState(true);
   const [showSkills, setShowSkills] = useState(() => {
     const storedValue = window.localStorage.getItem('skillsync.library.showSkills');
@@ -110,24 +120,18 @@ export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSel
     window.localStorage.setItem('skillsync.library.showSkills', String(showSkills));
   }, [showSkills]);
 
-  const allRoles = useMemo(() => {
+  const getUniqueValues = (questions: Question[], key: 'roles' | 'skills') => {
     const set = new Set<string>();
     for (const q of questions) {
-      for (const r of q.roles) {
-        set.add(r);
+      for (const item of q[key]) {
+        set.add(item);
       }
     }
-    return Array.from(set).sort();
-  }, [questions]);
-  const allSkills = useMemo(() => {
-    const set = new Set<string>();
-    for (const q of questions) {
-      for (const s of q.skills) {
-        set.add(s);
-      }
-    }
-    return Array.from(set).sort();
-  }, [questions]);
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  };
+
+  const allRoles = useMemo(() => getUniqueValues(questions, 'roles'), [questions]);
+  const allSkills = useMemo(() => getUniqueValues(questions, 'skills'), [questions]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, Map<string, Question[]>>();
@@ -219,7 +223,7 @@ export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSel
                   onChange={(event) => setShowSkills(event.target.checked)}
                   className="h-3.5 w-3.5 accent-sky-600"
                 />
-                Show Skills
+                <span>Show Skills</span>
               </label>
               {showSkills && (
                 <div className="mt-2 grid auto-cols-[calc((100%-1.5rem)/5)] grid-flow-col auto-rows-max gap-1.5 overflow-x-auto pb-2">
@@ -292,13 +296,13 @@ function TopicGroup({
   selectedId,
   onSelect,
   onSelectGroup,
-}: {
+}: Readonly<{
   topic: string;
   subs: [string, Question[]][];
   selectedId: string | null;
   onSelect: (q: Question) => void;
   onSelectGroup: (questions: Question[]) => void;
-}) {
+}>) {
   const [open, setOpen] = useState(true);
   const count = subs.reduce((n, [, qs]) => n + qs.length, 0);
 
@@ -341,13 +345,13 @@ function SubtopicGroup({
   selectedId,
   onSelect,
   onSelectGroup,
-}: {
+}: Readonly<{
   subtopic: string;
   questions: Question[];
   selectedId: string | null;
   onSelect: (q: Question) => void;
   onSelectGroup: (questions: Question[]) => void;
-}) {
+}>) {
   const [open, setOpen] = useState(true);
 
   return (

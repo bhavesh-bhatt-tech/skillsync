@@ -100,9 +100,9 @@ function normalizeQuestionInput(data: Record<string, unknown>) {
     question: String(data.question || '').trim(),
     answer: String(data.answer || '').trim(),
     type: String(data.type || 'CONCEPTUAL').toUpperCase(),
-    starterCode: data.starterCode ?? null,
-    skills: Array.isArray(data.skills) ? data.skills : [],
-    roles: Array.isArray(data.roles) ? data.roles : [],
+    starterCode: typeof data.starterCode === 'string' ? data.starterCode : null,
+    skills: Array.isArray(data.skills) ? (data.skills as string[]) : [],
+    roles: Array.isArray(data.roles) ? (data.roles as string[]) : [],
     minExperience: Math.max(0, Number(data.minExperience) || 0),
   };
 }
@@ -360,27 +360,37 @@ app.post('/api/questions/batch', async (req, res) => {
     let updated = 0;
 
     await prisma.$transaction(async (tx) => {
-      for (const item of payload) {
-        const validation = validateQuestionInput(item);
-        if (!validation.valid) {
-          continue;
-        }
+      const results = await Promise.all(
+        payload.map(async (item) => {
+          const validation = validateQuestionInput(item);
+          if (!validation.valid) {
+            return null;
+          }
 
-        const normalized = normalizeQuestionInput(item);
+          const normalized = normalizeQuestionInput(item);
 
-        const existing = await tx.question.findFirst({
-          where: {
-            topic: normalized.topic,
-            subtopic: normalized.subtopic,
-            question: normalized.question,
-          },
-        });
+          const existing = await tx.question.findFirst({
+            where: {
+              topic: normalized.topic,
+              subtopic: normalized.subtopic,
+              question: normalized.question,
+            },
+          });
 
-        if (existing) {
-          await tx.question.update({ where: { id: existing.id }, data: normalized });
+          if (existing) {
+            await tx.question.update({ where: { id: existing.id }, data: normalized });
+            return 'updated' as const;
+          } else {
+            await tx.question.create({ data: normalized });
+            return 'inserted' as const;
+          }
+        })
+      );
+
+      for (const res of results) {
+        if (res === 'updated') {
           updated += 1;
-        } else {
-          await tx.question.create({ data: normalized });
+        } else if (res === 'inserted') {
           inserted += 1;
         }
       }

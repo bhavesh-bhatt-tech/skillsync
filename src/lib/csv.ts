@@ -81,7 +81,7 @@ export function parseQuestionsCsv(text: string): ParsedCsvResult {
   const result = Papa.parse<Record<string, string>>(text, {
     header: true,
     skipEmptyLines: true,
-    transformHeader: (h) => h.trim(),
+    transformHeader: (h: string) => h.trim(),
   }) as Papa.ParseResult<ParsedCsvRow>;
 
   const headers = result.meta.fields ?? [];

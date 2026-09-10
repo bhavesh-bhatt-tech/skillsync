@@ -14,12 +14,12 @@ function getConfiguredAdminKey() {
 function sanitizeAdminKey(key: string): string {
   // Treat as plain string and remove control characters (ASCII 0-31 and 127-159)
   let result = '';
-  for (let i = 0; i < key.length; i++) {
-    const code = key.charCodeAt(i);
-    if ((code >= 0 && code <= 31) || (code >= 127 && code <= 159)) {
+  for (const char of key) {
+    const code = char.codePointAt(0);
+    if (code !== undefined && (code <= 31 || (code >= 127 && code <= 159))) {
       continue;
     }
-    result += key[i];
+    result += char;
   }
   return result;
 }

@@ -1,12 +1,18 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import '@testing-library/jest-dom/vitest';
 
-function Crash() {
+function Crash(): JSX.Element {
   throw new Error('boom');
+  return null as unknown as JSX.Element;
 }
 
 describe('ErrorBoundary', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('renders children when no error occurs', () => {
     render(
       <ErrorBoundary>
@@ -43,3 +49,4 @@ describe('ErrorBoundary', () => {
     consoleSpy.mockRestore();
   });
 });
+

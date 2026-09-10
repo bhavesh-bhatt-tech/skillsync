@@ -63,14 +63,7 @@ function CodingCard({ question }: Readonly<{ question: Question }>) {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(textToCopy);
       } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = textToCopy;
-        textarea.style.position = 'fixed';
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
+        throw new Error('Clipboard API not supported');
       }
 
       setCopied(true);

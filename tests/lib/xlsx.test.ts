@@ -57,11 +57,12 @@ describe('parseQuestionsXlsx', () => {
       skills: 'k8s; docker',
       roles: 'platform; sre',
     }]));
+    console.log('ACTUAL RESULT ROW:', JSON.stringify(result.rows[0], null, 2));
 
     expect(result.errors).toEqual([]);
     expect(result.rows[0]).toMatchObject({
-      min_experience: 0,
-      starter_code: null,
+      minExperience: 0,
+      starterCode: null,
       skills: ['k8s', 'docker'],
       roles: ['platform', 'sre'],
       type: 'CONCEPTUAL',

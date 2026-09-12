@@ -5,11 +5,11 @@ export interface Question {
   question: string;
   answer: string;
   type: string;
-  starter_code: string | null;
+  starterCode: string | null;
   skills: string[];
   roles: string[];
-  min_experience: number;
-  created_at: string;
+  minExperience: number;
+  createdAt: string;
 }
 
 export interface QuestionInput {
@@ -18,10 +18,10 @@ export interface QuestionInput {
   question: string;
   answer: string;
   type: string;
-  starter_code?: string | null;
+  starterCode?: string | null;
   skills: string[];
   roles: string[];
-  min_experience: number;
+  minExperience: number;
 }
 
 export interface Filters {

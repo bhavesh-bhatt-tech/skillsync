@@ -99,12 +99,12 @@ function ResizableSection({
 }
 
 interface SidebarProps {
-  questions: Question[];
-  filters: Filters;
-  onFiltersChange: (f: Filters) => void;
-  selectedId: string | null;
-  onSelect: (q: Question) => void;
-  onSelectGroup: (questions: Question[]) => void;
+  readonly questions: Question[];
+  readonly filters: Filters;
+  readonly onFiltersChange: (f: Filters) => void;
+  readonly selectedId: string | null;
+  readonly onSelect: (q: Question) => void;
+  readonly onSelectGroup: (questions: Question[]) => void;
 }
 
 export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSelect, onSelectGroup }: Readonly<SidebarProps>) {
@@ -216,8 +216,9 @@ export function Sidebar({ questions, filters, onFiltersChange, selectedId, onSel
             </div>
 
             <div>
-              <label className="flex cursor-pointer items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+              <label htmlFor="show-skills" className="flex cursor-pointer items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-500">
                 <input
+                  id="show-skills"
                   type="checkbox"
                   checked={showSkills}
                   onChange={(event) => setShowSkills(event.target.checked)}

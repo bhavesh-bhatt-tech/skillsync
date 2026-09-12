@@ -24,7 +24,7 @@ dist-ssr
 .env
 .neon
 temp_analysis/ 
-temp_analysis/ 
+temp_diagnostics/
 
 # test artifacts
 coverage/
@@ -41,5 +41,12 @@ ci-log.txt
 .sonarlint/
 .clinerules/
 
-# local MCP/agent instructions
-.github/instructions/sonarqube_mcp.instructions.md
+# build artifacts
+*.tsbuildinfo
+
+# diagnostics & reports
+sonar-issues.json
+vitest-report.json
+
+# locks
+skills-lock.json

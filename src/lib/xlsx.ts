@@ -7,10 +7,10 @@ export interface QuestionInput {
   question: string;
   answer: string;
   type: 'CONCEPTUAL' | 'PRACTICAL' | 'SYSTEM_DESIGN' | 'CODING';
-  starter_code: string | null;
+  starterCode: string | null;
   skills: string[];
   roles: string[];
-  min_experience: number;
+  minExperience: number;
 }
 
 export interface ParsedSpreadsheetResult {
@@ -47,10 +47,10 @@ export function downloadQuestionsXlsx(filename: string, questions: Question[]) {
     question: q.question,
     answer: q.answer,
     type: q.type,
-    starterCode: q.starter_code,
+    starterCode: q.starterCode,
     skills: q.skills.join(', '),
     roles: q.roles.join(', '),
-    minExperience: q.min_experience,
+    minExperience: q.minExperience,
   }));
   const ws = XLSX.utils.json_to_sheet(formattedQuestions);
   const wb = XLSX.utils.book_new();
@@ -116,10 +116,10 @@ export function parseQuestionsXlsx(data: ArrayBuffer): ParsedSpreadsheetResult {
         question,
         answer,
         type: typeValue as QuestionType,
-        starter_code: get(row, 'starterCode') || null,
+        starterCode: get(row, 'starterCode') || null,
         skills: parseList(get(row, 'skills')),
         roles: parseList(get(row, 'roles')),
-        min_experience: Math.max(0, Number(get(row, 'minExperience')) || 0),
+        minExperience: Math.max(0, Number(get(row, 'minExperience')) || 0),
       });
     }
     return { rows, errors };

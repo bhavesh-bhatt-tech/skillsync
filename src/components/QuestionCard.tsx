@@ -23,7 +23,7 @@ function MetaRow({ question }: Readonly<{ question: Question }>) {
           <GraduationCap className="h-3 w-3" /> {s}
         </span>
       ))}
-      <span className="ml-auto text-xs text-slate-400">Min exp: {question.min_experience}+ yrs</span>
+      <span className="ml-auto text-xs text-slate-400">Min exp: {question.minExperience}+ yrs</span>
     </div>
   );
 }
@@ -60,29 +60,17 @@ function CodingCard({ question }: Readonly<{ question: Question }>) {
   const copy = async () => {
     try {
       const textToCopy = question.answer ?? '';
-      if (navigator.clipboard?.writeText) {
+      if (navigator.clipboard) {
         await navigator.clipboard.writeText(textToCopy);
-      } else if (typeof document !== 'undefined' && 'execCommand' in document) {
-        const textArea = document.createElement('textarea');
-        textArea.value = textToCopy;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        try {
-          textArea.focus();
-          textArea.select();
-          const doc = document as unknown as { execCommand?: (command: string) => boolean };
-          const successful = doc.execCommand?.('copy');
-          if (!successful) {
-            throw new Error('execCommand copy failed');
-          }
-        } finally {
-          textArea.remove();
-        }
       } else {
-        throw new Error('Clipboard API not supported');
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
       }
-
       setCopied(true);
       if (timeoutRef.current !== null) {
         clearTimeout(timeoutRef.current);

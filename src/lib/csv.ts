@@ -21,10 +21,10 @@ export function questionsToCsv(questions: Question[]): string {
     question: q.question,
     answer: q.answer,
     type: q.type,
-    starterCode: q.starter_code ?? '',
+    starterCode: q.starterCode ?? '',
     skills: q.skills.join('|'),
     roles: q.roles.join('|'),
-    minExperience: q.min_experience,
+    minExperience: q.minExperience,
   }));
   return Papa.unparse({ fields: [...QUESTION_HEADERS], data: rows });
 }
@@ -116,10 +116,10 @@ export function parseQuestionsCsv(text: string): ParsedCsvResult {
       question,
       answer,
       type: typeRaw,
-      starter_code: normalized.starterCode?.trim() || null,
+      starterCode: normalized.starterCode?.trim() || null,
       skills: parseList(normalized.skills),
       roles: parseList(normalized.roles),
-      min_experience: Number(normalized.minExperience) || 0,
+      minExperience: Number(normalized.minExperience) || 0,
     });
   }
 

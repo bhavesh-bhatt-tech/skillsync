@@ -1,0 +1,13 @@
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mF:/personal/Projects/Interview-Manager-App/Interview-Manager/project[39m
+
+ [32m✓[39m tests/components/AdminPanel.test.tsx [2m([22m[2m13 tests[22m[2m)[22m[33m 954[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m13 passed[39m[22m[90m (13)[39m
+[2m   Start at [22m 23:18:10
+[2m   Duration [22m 10.83s[2m (transform 240ms, setup 327ms, collect 468ms, tests 954ms, environment 1.10s, prepare 1.00s)[22m
+
+
+npm notice run skillsync@0.0.0 npx
+npm notice run vitest run --no-cache tests/components/AdminPanel.test.tsx

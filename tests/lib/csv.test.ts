@@ -21,11 +21,11 @@ describe('csv helpers', () => {
         question: 'What is a thread?',
         answer: 'Execution path',
         type: 'CONCEPTUAL',
-        starter_code: null,
+        starterCode: null,
         skills: ['Java', 'JVM'],
         roles: ['Backend', 'Lead'],
-        min_experience: 3,
-        created_at: new Date().toISOString(),
+        minExperience: 3,
+        createdAt: new Date().toISOString(),
       },
     ];
 
@@ -79,7 +79,7 @@ describe('csv helpers', () => {
       type: 'CODING',
       skills: ['Java', 'Collections'],
       roles: ['Backend', 'Lead'],
-      min_experience: 4,
+      minExperience: 4,
     });
   });
 

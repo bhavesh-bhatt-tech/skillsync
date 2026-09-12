@@ -62,7 +62,7 @@ export interface Question {
   question: string;
   answer: string;
   type: 'CONCEPTUAL' | 'PRACTICAL' | 'SYSTEM_DESIGN' | 'CODING';
-  starterCode?: string | null;
+  starterCode: string | null;
   skills: string[];
   roles: string[];
   minExperience: number;
@@ -75,7 +75,9 @@ type AppQuestion = Omit<Question, 'createdAt' | 'updatedAt'> & {
   updatedAt?: string;
 };
 
-type ApiQuestion = Question;
+type ApiQuestion = Omit<Question, 'starterCode'> & {
+  starterCode?: string | null;
+};
 
 function toQuestion(q: ApiQuestion): AppQuestion {
   return {
@@ -85,7 +87,7 @@ function toQuestion(q: ApiQuestion): AppQuestion {
     question: q.question,
     answer: q.answer,
     type: q.type,
-    starterCode: q.starterCode,
+    starterCode: q.starterCode ?? null,
     skills: q.skills,
     roles: q.roles,
     minExperience: q.minExperience,

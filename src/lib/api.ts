@@ -29,6 +29,7 @@ async function apiFetch(url: string, init: RequestInit = {}, admin = false) {
       return response;
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
+      console.error(`[API Error] Attempt ${attempt}/${MAX_RETRIES} failed for ${url}:`, lastError);
       
       // Don't retry on abort or auth errors
       if (lastError.name === 'AbortError' || lastError.message?.includes('401')) {
@@ -42,6 +43,7 @@ async function apiFetch(url: string, init: RequestInit = {}, admin = false) {
     }
   }
 
+  console.error(`[API Error] All ${MAX_RETRIES} attempts failed for ${url}:`, lastError);
   throw lastError || new Error('Failed to fetch after retries');
 }
 
@@ -106,6 +108,7 @@ const FALLBACK_QUESTIONS: AppQuestion[] = [
       '| Platform Thread | Virtual Thread |\n|---|---|\n| ~1 MB stack | ~few KB stack |\n| OS-scheduled | JVM-scheduled |\n| ~thousands max | ~millions max |\n\n' +
       '```java\ntry (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    IntStream.range(0, 10_000).forEach(i ->\n        executor.submit(() -> { Thread.sleep(Duration.ofSeconds(1)); return i; })\n    );\n}\n```',
     type: 'CONCEPTUAL',
+    starterCode: null,
     skills: ['Java 21', 'Concurrency', 'Virtual Threads'],
     roles: ['Backend Engineer', 'Tech Lead'],
     minExperience: 5,
@@ -136,6 +139,7 @@ const FALLBACK_QUESTIONS: AppQuestion[] = [
       '## Pipeline stages and tooling\n\n' +
       '| Stage | Control | Example Tools |\n|---|---|---|\n| Source | Pre-commit hooks, secret scanning | gitleaks, trufflehog |\n| Build | SAST, dependency scanning | SonarQube, Snyk |\n| Package | Image scanning | Trivy, Grype |\n| Deploy | IaC scanning, policy gates | OPA, tfsec |\n| Runtime | Container & runtime monitoring | Falco, Aqua |',
     type: 'CONCEPTUAL',
+    starterCode: null,
     skills: ['DevSecOps', 'CI/CD', 'Security'],
     roles: ['DevOps Engineer', 'Platform Engineer', 'Tech Lead'],
     minExperience: 7,

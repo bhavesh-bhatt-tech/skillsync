@@ -26,6 +26,12 @@ dist-ssr
 temp_analysis/ 
 temp_diagnostics/
 
+# AI Coding Assistant Folders
+.agents/
+.claude/
+.cline/
+.continue/
+
 # test artifacts
 coverage/
 vitest-junit.xml

@@ -39,14 +39,39 @@ describe('App', () => {
     });
   });
 
-  it('shows error toast when initial question load fails', async () => {
+  it('shows error state and retry button when initial question load fails', async () => {
     vi.mocked(api.fetchQuestions).mockRejectedValueOnce(new Error('network down'));
 
     render(<App />);
 
     await waitFor(() => {
       expect(screen.getByText('Failed to load questions: network down')).toBeInTheDocument();
-      expect(screen.getByText('Select a question to begin')).toBeInTheDocument();
+      expect(screen.getByText('Unable to load questions')).toBeInTheDocument();
+      expect(screen.getByText('network down')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Retry Request' })).toBeInTheDocument();
+    });
+
+    // Test retry click
+    vi.mocked(api.fetchQuestions).mockResolvedValueOnce([
+      {
+        id: '1',
+        topic: 'System Design',
+        subtopic: 'Caching',
+        question: 'Explain Redis caching strategies',
+        answer: 'Write-through vs Cache-aside',
+        type: 'SYSTEM_DESIGN',
+        starterCode: null,
+        skills: ['Redis'],
+        roles: ['Architect'],
+        minExperience: 5,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Retry Request' }));
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Explain Redis caching strategies').length).toBeGreaterThan(0);
     });
   });
 

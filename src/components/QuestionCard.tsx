@@ -69,7 +69,7 @@ function CodingCard({ question }: Readonly<{ question: Question }>) {
         document.body.appendChild(textarea);
         textarea.select();
         document.execCommand('copy');
-        document.body.removeChild(textarea);
+        textarea.remove();
       }
       setCopied(true);
       if (timeoutRef.current !== null) {

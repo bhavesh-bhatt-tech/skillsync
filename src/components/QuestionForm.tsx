@@ -21,10 +21,10 @@ export function QuestionForm({ editing, onSaved, onCancel }: QuestionFormProps) 
     question: editing?.question ?? '',
     answer: editing?.answer ?? '',
     type: editing?.type ?? QUESTION_TYPES.CONCEPTUAL,
-    starter_code: editing?.starter_code ?? '',
+    starterCode: editing?.starterCode ?? '',
     skills: editing?.skills ?? [],
     roles: editing?.roles ?? [],
-    min_experience: editing?.min_experience ?? 0,
+    minExperience: editing?.minExperience ?? 0,
   });
   const [skillsText, setSkillsText] = useState(form.skills.join(', '));
   const [rolesText, setRolesText] = useState(form.roles.join(', '));
@@ -46,10 +46,10 @@ export function QuestionForm({ editing, onSaved, onCancel }: QuestionFormProps) 
       question: form.question,
       answer: form.answer,
       type: form.type as never,
-      starterCode: form.type === QUESTION_TYPES.CODING ? form.starter_code ?? null : null,
+      starterCode: form.type === QUESTION_TYPES.CODING ? form.starterCode ?? null : null,
       skills: skillsText.split(',').map((s) => s.trim()).filter(Boolean),
       roles: rolesText.split(',').map((r) => r.trim()).filter(Boolean),
-      minExperience: form.min_experience,
+      minExperience: form.minExperience,
     };
     setSaving(true);
     try {
@@ -125,8 +125,8 @@ export function QuestionForm({ editing, onSaved, onCancel }: QuestionFormProps) 
             id={`${id}-minExperience`}
             type="number" min={0} max={MAX_EXPERIENCE}
             className={inputCls}
-            value={form.min_experience}
-            onChange={(e) => setField('min_experience', Number(e.target.value) || 0)}
+            value={form.minExperience}
+            onChange={(e) => setField('minExperience', Number(e.target.value) || 0)}
           />
         </div>
         {form.type === QUESTION_TYPES.CODING && (
@@ -136,7 +136,7 @@ export function QuestionForm({ editing, onSaved, onCancel }: QuestionFormProps) 
               id={`${id}-starter`}
               className={`${inputCls} min-h-[120px] font-mono text-xs`}
               value={form.starterCode ?? ''}
-              onChange={(e) => setField('starter_code', e.target.value)}
+              onChange={(e) => setField('starterCode', e.target.value)}
               placeholder="// starter code…"
             />
           </div>

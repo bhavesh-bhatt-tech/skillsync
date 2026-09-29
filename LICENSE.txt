@@ -1,0 +1,6 @@
+Copyright (c) 2026 bhavesh-bhatt-tech. All rights reserved.
+
+This software and its source code are proprietary. Unauthorized copying, 
+redistribution, modification, or commercial use of this file, via any 
+medium, is strictly prohibited without the express written permission 
+of the copyright owner.
